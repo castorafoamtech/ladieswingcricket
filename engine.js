@@ -63,9 +63,11 @@ export function seqLock(s, q) {
     const n = q.length;
     const done = s.players.filter((p) => p.status === 'sold' || p.status === 'unsold').length + (s.auction.current ? 1 : 0);
     const out = new Array(n).fill(null), used = new Set(), taken = new Set();
-    const idOf = (m) => { const p = s.players.find((x) => last10(x.priv && x.priv.mobile) === m); return p && q.includes(p.id) ? p.id : null; };
+    // a pin matches a player by mobile number (if the sheet has one) or by name
+    const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    const idOf = (m) => { const p = s.players.find((x) => (last10(m) && last10(x.priv && x.priv.mobile) === last10(m)) || nm(x.name) === nm(m)); return p && q.includes(p.id) ? p.id : null; };
     const put = (id, i) => { out[i] = id; used.add(id); taken.add(i); };
-    const PIN_SLOTS = (s.settings.pins || []).map((x) => ({ m: last10(x.m), at: x.at ? Number(x.at) : null, from: Number(x.from) || 0, to: Number(x.to) || 0 })).filter((x) => x.m && (x.at || (x.from && x.to)));
+    const PIN_SLOTS = (s.settings.pins || []).map((x) => ({ m: String(x.m || '').trim(), at: x.at ? Number(x.at) : null, from: Number(x.from) || 0, to: Number(x.to) || 0 })).filter((x) => x.m && (x.at || (x.from && x.to)));
     for (const sl of PIN_SLOTS) { if (sl.at == null) continue; const id = idOf(sl.m); const i = sl.at - 1 - done; if (id && i >= 0 && i < n && !taken.has(i)) put(id, i); }
     for (const sl of PIN_SLOTS) {
       if (sl.at != null) continue;

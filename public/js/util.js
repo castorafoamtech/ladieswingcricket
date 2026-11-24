@@ -18,10 +18,10 @@ export function inrShort(n) {
 }
 
 export const LEVEL = {
-  yes: { label: 'REGULARLY', long: 'Plays regularly', color: '#2fe38a', dots: 4 },
-  sometimes: { label: 'SOMETIMES', long: 'Plays sometimes', color: '#ffc53d', dots: 3 },
-  rarely: { label: 'RARELY', long: 'Plays rarely', color: '#ff8a3d', dots: 2 },
-  no: { label: 'NEVER', long: 'New to cricket', color: '#6cb6ff', dots: 1 },
+  yes: { label: 'PLAYS OFTEN', long: 'Plays often (with kids)', color: '#2fe38a', dots: 4 },
+  sometimes: { label: 'MONTH / YEAR', long: 'Once a month / year', color: '#ffc53d', dots: 3 },
+  rarely: { label: 'IN CHILDHOOD', long: 'Played in childhood', color: '#ff8a3d', dots: 2 },
+  no: { label: 'FIRST TIME', long: 'Playing for the first time', color: '#6cb6ff', dots: 1 },
 };
 export const STATUS_LABEL = { pending: 'Pending', sold: 'Sold', unsold: 'Unsold', retained: 'Retained' };
 

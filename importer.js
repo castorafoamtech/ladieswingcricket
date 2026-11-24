@@ -49,12 +49,14 @@ export function photoUrl(raw) {
   return u;
 }
 
+// "How often do you play cricket?" answers -> 4 levels
 export function normalizeLevel(v) {
   const s = String(v || '').trim().toLowerCase();
   if (!s) return 'no';
-  if (/^(y|yes|yeah|regular|regularly|always|daily|often|frequent|frequently|pro|yes regular)/.test(s)) return 'yes';
-  if (/^(some|occasion|ocassion|sometimes|moderate|few times|monthly|once in a while)/.test(s)) return 'sometimes';
-  if (/^(rare|seldom|hardly|once)/.test(s)) return 'rarely';
+  if (/first time|never|new to|^no\b/.test(s)) return 'no';
+  if (/childhood|rare|seldom|hardly|used to/.test(s)) return 'rarely';
+  if (/month|year|some|occasion|ocassion|once/.test(s)) return 'sometimes';
+  if (/often|regular|kids|daily|weekly|always|frequent|^y/.test(s)) return 'yes';
   return 'no';
 }
 

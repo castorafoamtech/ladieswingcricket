@@ -365,6 +365,15 @@ let IMPORT_CFG = { sheetUrl: '', owners: {}, exclude: [], photoFocus: {}, retain
 try { IMPORT_CFG = { ...IMPORT_CFG, ...JSON.parse(fs.readFileSync(path.join(SEED_DIR, 'import.json'), 'utf8')) }; } catch { /* optional */ }
 if (!state.settings.pins.length && (IMPORT_CFG.pins || []).length) state.settings.pins = IMPORT_CFG.pins;
 
+// Tidy form headers for display: "3. PLAYER ROLE " -> "Role"
+const titleCase = (v) => String(v || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(/(^|[\s.(\/-])([a-z])/g, (m, a, c) => a + c.toUpperCase());
+function colLabel(h) {
+  const t = String(h || '').replace(/^\s*\d+\s*[.)]\s*/, '').replace(/\(.*?\)/g, '').trim();
+  if (/role/i.test(t)) return 'Role';
+  if (/right hand|left hand|batting/i.test(t)) return 'Batting';
+  if (/player type|type/i.test(t)) return 'Player type';
+  return titleCase(t);
+}
 function importRows(headers, rows, mapping, mode) {
   if (!(mapping.name >= 0)) throw Object.assign(new Error('Pick the Name column'), { status: 400 });
   if (mode === 'replace') {
@@ -375,7 +384,7 @@ function importRows(headers, rows, mapping, mode) {
   const PRIV = /mobile|phone|whatsapp|contact|receipt|payment|timestamp|e-?mail|address/i;
   const FILE = /upload|picture|photo/i;
   const phoneOf = (v) => String(v || '').replace(/\D/g, '').slice(0, 10);
-  const norm = (n) => n.toLowerCase().replace(/\s+/g, ' ').trim();
+  const norm = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const keyOf = (n, ph) => norm(n) + '|' + ph;
   const excluded = new Set((IMPORT_CFG.exclude || []).map(norm));
     const have = new Set(state.players.map((p) => keyOf(p.name, phoneOf(p.priv && p.priv.mobile))));
@@ -384,7 +393,7 @@ function importRows(headers, rows, mapping, mode) {
   const mapped = new Set(Object.values(mapping).filter((v) => v >= 0));
   let added = 0; let skipped = 0;
   for (const r of rows) {
-    let name = clean(r[mapping.name]);
+    let name = titleCase(clean(r[mapping.name]).replace(/\s+ji$/i, ''));
     if (!name) continue;
     if (excluded.has(norm(name))) { skipped++; continue; }
     const extra = {}; const priv = {};
@@ -392,7 +401,9 @@ function importRows(headers, rows, mapping, mode) {
       if (mapped.has(i) || !h || !clean(r[i])) return;
       if (FILE.test(h)) return;
       if (PRIV.test(h)) { priv[h] = clean(r[i]); return; }
-      extra[h] = clean(r[i]);
+      const lab = colLabel(h); let val = titleCase(clean(r[i]));
+      if (lab === 'Role' && /^both$/i.test(val)) val = 'All-rounder';
+      extra[lab] = val;
     });
     const mob = Object.entries(priv).find(([h]) => /mobile|phone|whatsapp|contact/i.test(h));
     if (mob) priv.mobile = clean(mob[1]);

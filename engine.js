@@ -20,13 +20,13 @@ export function defaultSettings() {
     time: '',
     venue: '',
     squadSize: 14,            // players per team
-    purse: 1000000,           // default purse per team
-    retainedPrice: 0,         // price charged to the purse for each team's retained player
-    basePrice: 10000,
+    purse: 5000000,           // default purse per team (50 lakh)
+    retainedPrice: 500000,    // owner-captain retained at 5 lakh
+    basePrice: 100000,
     // bid increments: while price < upTo, add `step`. upTo = null means "no limit".
     slabs: [
-      { upTo: 50000, step: 5000 },
-      { upTo: null, step: 10000 },
+      { upTo: 500000, step: 50000 },
+      { upTo: null, step: 100000 },
     ],
     maxBid: null,             // optional hard cap on a single player price
     enforcePurse: true,

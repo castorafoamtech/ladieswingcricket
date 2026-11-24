@@ -370,7 +370,11 @@ try {
   if (!state.teams.length && Array.isArray(EV.teams)) {
     for (const x of EV.teams) state.teams.push({ id: E.uid('t'), name: x.name, short: x.short || '', color: x.color || '#FF4D8D', owner: x.owner || '', logo: x.logo || '', ownerPhoto: '', purse: null, squadSize: null, jersey: x.jersey || { primary: x.color, secondary: '#0F4233', pattern: 'solid' } });
   }
-  if (!(state.settings.sponsors || []).length && EV.settings) Object.assign(state.settings, EV.settings);
+  // apply the event's rules once per seed version, only before the auction has started
+  if (EV.settings && (state.meta.eventSeed || 0) < (EV.version || 1) && state.auction.phase === 'idle') {
+    Object.assign(state.settings, EV.settings);
+    state.meta.eventSeed = EV.version || 1;
+  }
 } catch { /* optional */ }
 
 // Tidy form headers for display: "3. PLAYER ROLE " -> "Role"

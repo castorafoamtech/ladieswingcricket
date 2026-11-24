@@ -20,7 +20,7 @@ const NAV = [['#/', 'Auction', 'gavel'], ['#/teams', 'Teams', 'teams'], ['#/play
 function layout() {
   $('#app').innerHTML = `
   <header class="top"><div class="wrap">
-    <a class="brand" href="#/"><img class="emblem" src="/assets/jito-emblem.png" alt="JITO"><div><div class="t1">JITO Ladies Wing Bhavnagar</div><div class="t2">Ladies Cricket Tournament · Player Auction</div></div></a>
+    <a class="brand" href="#/"><img class="emblem" src="/assets/jito-ladies.png" alt="JITO Ladies"><div><div class="t1">JITO Ladies Wing Bhavnagar</div><div class="t2">Ladies Cricket Tournament · Player Auction</div></div></a>
     <nav class="main">${NAV.map(([h, l]) => `<a href="${h}" data-nav="${h}">${l}</a>`).join('')}</nav>
     <div class="sp"></div>
     <a class="live-pill off" id="livePill" href="#/"><i></i><span>OFFLINE</span></a>

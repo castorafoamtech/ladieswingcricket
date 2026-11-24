@@ -92,7 +92,7 @@ export function homeView() {
   const header = (s) => {
     const st = s.settings;
     const sp = st.sponsors || [];
-    return `<section class="hero"><div class="hero-brand"><img class="emblem" src="/assets/jito-ladies.png" alt="JITO Ladies"><div><small>${esc(st.organiser || 'JITO Ladies Wing Bhavnagar')}</small>${st.presentedBy ? `<span>Presented by <b>${esc(st.presentedBy)}</b>${st.coSponsor ? ` · with ${esc(st.coSponsor)}` : ''}</span>` : ''}</div></div>
+    return `<section class="hero"><div class="hero-brand"><img class="emblem" src="/assets/jito-ladies.png" alt="JITO Ladies"><div><small>${esc(st.organiser || 'JITO Ladies Wing Bhavnagar')}</small>${st.presentedBy && !sp.some((x) => /title/i.test(x.role) && x.logo) ? `<span>Presented by <b>${esc(st.presentedBy)}</b>${st.coSponsor ? ` · with ${esc(st.coSponsor)}` : ''}</span>` : ''}</div>${(() => { const t = sp.find((x) => /title/i.test(x.role) && x.logo); return t ? `<div class="title-sp"><small>Title sponsor</small><img src="${esc(t.logo)}" alt="${esc(t.name)}"></div>` : ''; })()}</div>
     <div class="hero-title"><div class="l1">${esc(st.eventName || 'Ladies Cricket Tournament')}</div><br><div class="l2"><span>Player Auction</span></div></div>
     <div class="event-chips">${st.auctionDate ? `<span class="chip on">${icon('gavel')}Auction · ${esc(st.auctionDate)}${st.auctionVenue ? ' · ' + esc(st.auctionVenue) : ''}</span>` : ''}${st.date ? `<span class="chip">${icon('cal')}Tournament · ${esc(st.date)}</span>` : ''}${st.time ? `<span class="chip">${icon('clock')}${esc(st.time)}</span>` : ''}${st.venue ? `<span class="chip">${icon('pin')}${esc(st.venue)}</span>` : ''}</div></section>`;
   };

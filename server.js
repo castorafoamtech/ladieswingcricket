@@ -276,7 +276,7 @@ app.put('/api/admin/settings', admin, mutate((req) => {
     if (!slabs.length || slabs[slabs.length - 1].upTo !== null) slabs.push({ upTo: null, step: slabs.length ? slabs[slabs.length - 1].step : 500 });
     s.slabs = slabs;
   }
-  if (Array.isArray(b.sponsors)) s.sponsors = b.sponsors.map((x) => ({ role: clean(x.role), name: clean(x.name) })).filter((x) => x.name);
+  if (Array.isArray(b.sponsors)) s.sponsors = b.sponsors.map((x) => ({ role: clean(x.role), name: clean(x.name), logo: clean(x.logo) })).filter((x) => x.name);
   if (Array.isArray(b.pins)) s.pins = b.pins.map((x) => ({ m: clean(x.m), at: Number(x.at) > 0 ? Number(x.at) : null, from: Number(x.from) > 0 ? Number(x.from) : null, to: Number(x.to) > 0 ? Number(x.to) : null })).filter((x) => x.m && (x.at || (x.from && x.to)));
   return [{ type: 'settings' }];
 }));
@@ -364,6 +364,14 @@ app.post('/api/admin/import/preview', admin, wrap(async (req, res) => {
 let IMPORT_CFG = { sheetUrl: '', owners: {}, exclude: [], photoFocus: {}, retained: {}, rename: {}, pins: [] };
 try { IMPORT_CFG = { ...IMPORT_CFG, ...JSON.parse(fs.readFileSync(path.join(SEED_DIR, 'import.json'), 'utf8')) }; } catch { /* optional */ }
 if (!state.settings.pins.length && (IMPORT_CFG.pins || []).length) state.settings.pins = IMPORT_CFG.pins;
+// Teams and sponsors (seed/event.json) are loaded once, on a fresh start
+try {
+  const EV = JSON.parse(fs.readFileSync(path.join(SEED_DIR, 'event.json'), 'utf8'));
+  if (!state.teams.length && Array.isArray(EV.teams)) {
+    for (const x of EV.teams) state.teams.push({ id: E.uid('t'), name: x.name, short: x.short || '', color: x.color || '#FF4D8D', owner: x.owner || '', logo: x.logo || '', ownerPhoto: '', purse: null, squadSize: null, jersey: x.jersey || { primary: x.color, secondary: '#0F4233', pattern: 'solid' } });
+  }
+  if (!(state.settings.sponsors || []).length && EV.settings) Object.assign(state.settings, EV.settings);
+} catch { /* optional */ }
 
 // Tidy form headers for display: "3. PLAYER ROLE " -> "Role"
 const titleCase = (v) => String(v || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(/(^|[\s.(\/-])([a-z])/g, (m, a, c) => a + c.toUpperCase());

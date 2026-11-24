@@ -47,7 +47,7 @@ function layout() {
 
 function sponsorsHTML(state) {
   const sp = (state && state.settings.sponsors) || [];
-  return sp.map((x) => `<div style="padding-left:18px;border-left:2px solid var(--yellow)"><small style="font-family:var(--label);letter-spacing:.22em;font-weight:700;color:var(--yellow);text-transform:uppercase;font-size:12px">${esc(x.role)}</small><div style="font-family:var(--head);font-size:22px;text-transform:uppercase;letter-spacing:.02em">${esc(x.name)}</div></div>`).join('');
+  return sp.map((x) => `<div class="spon"><small>${esc(x.role)}</small>${x.logo ? `<img src="${esc(x.logo)}" alt="${esc(x.name)}">` : `<div class="nm">${esc(x.name)}</div>`}</div>`).join('');
 }
 let spSig = '';
 function liveBar(state) {

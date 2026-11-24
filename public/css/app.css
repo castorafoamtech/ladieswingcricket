@@ -722,3 +722,12 @@ nav.main a{padding:10px 12px;letter-spacing:.1em}
 .hero-brand span{display:block;font-size:13px;color:var(--muted)}
 .hero-brand b{color:#fff}
 .hero-title .l1{padding:0 .18em 0 .1em}
+
+.spon{display:flex;flex-direction:column;gap:6px;padding-left:18px;border-left:2px solid var(--yellow)}
+.spon small{font-family:var(--label);letter-spacing:.22em;font-weight:700;color:var(--yellow);text-transform:uppercase;font-size:12px}
+.spon .nm{font-family:var(--head);font-size:22px;text-transform:uppercase;letter-spacing:.02em}
+.spon img{height:64px;width:auto;border-radius:8px}
+.hero-brand .title-sp{display:flex;align-items:center;gap:10px;padding-left:14px;margin-left:4px;border-left:1px solid rgba(255,255,255,.18)}
+.hero-brand .title-sp small{font-size:11px;letter-spacing:.22em;color:var(--muted)}
+.hero-brand .title-sp img{height:52px;width:auto;border-radius:8px;box-shadow:0 0 24px rgba(0,0,0,.35)}
+@media (max-width:640px){.hero-brand{flex-wrap:wrap}.hero-brand .title-sp{border-left:0;padding-left:0;margin-left:0;width:100%;justify-content:center}}

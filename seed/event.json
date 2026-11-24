@@ -1,0 +1,13 @@
+{
+  "teams": [
+    { "name": "Ami's Warriors", "short": "AW", "color": "#D9A84E", "owner": "", "logo": "/assets/teams/amis-warriors.jpg", "jersey": { "primary": "#1A1A1A", "secondary": "#D9A84E", "pattern": "solid" } },
+    { "name": "Kreyansh Mavericks", "short": "KM", "color": "#2148C0", "owner": "", "logo": "/assets/teams/kreyansh-mavericks.jpg", "jersey": { "primary": "#1B2F8A", "secondary": "#F5C33B", "pattern": "solid" } },
+    { "name": "Kanadia Fire Queens", "short": "KFQ", "color": "#E8461E", "owner": "Monika Rajen Shah", "logo": "/assets/teams/kanadia-fire-queens.jpg", "jersey": { "primary": "#1A1A1A", "secondary": "#E8461E", "pattern": "solid" } }
+  ],
+  "settings": {
+    "presentedBy": "Tivara Silver Jewel",
+    "sponsors": [
+      { "role": "Title Sponsor", "name": "Tivara Silver Jewel", "logo": "/assets/sponsors/tivara.jpg" }
+    ]
+  }
+}

@@ -19,7 +19,7 @@ export function defaultSettings() {
     date: '',
     time: '',
     venue: '',
-    squadSize: 12,            // players per team
+    squadSize: 14,            // players per team
     purse: 1000000,           // default purse per team
     retainedPrice: 0,         // price charged to the purse for each team's retained player
     basePrice: 10000,

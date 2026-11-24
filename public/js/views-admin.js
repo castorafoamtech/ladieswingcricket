@@ -282,7 +282,7 @@ export function adminSettingsView() {
         <h3 class="ph3" style="margin-top:20px">Enforcement</h3>${sw('enforcePurse', 'Block bids above a team’s purse')}${sw('enforceReserve', 'Keep base price reserve for remaining slots')}${sw('enforceSquad', 'Block bids when squad is full')}</div>
       <div class="panel glass" style="margin-top:18px"><h3 class="ph3">Event details</h3><div class="form-grid">${f('eventName', 'Event name')}${f('organiser', 'Organiser')}${f('presentedBy', 'Presented by')}${f('coSponsor', 'Co-sponsored by')}${f('date', 'Date')}${f('time', 'Time')}${f('venue', 'Venue')}${f('auctionDate', 'Auction date (display)')}${f('auctionVenue', 'Auction venue')}${f('startAt', 'Auction start (countdown)', 'text', 'e.g. 2026-11-20T18:00:00+05:30')}</div></div>
       <div class="panel glass" style="margin-top:18px"><h3 class="ph3">Pinned players (fixed auction position)</h3><div class="field"><label>One per line: player name | position (e.g. 20) or range (e.g. 1-14)</label><textarea class="textarea" id="pinText" rows="4" placeholder="Krupa Shah | 20&#10;Ami Shah | 1-14">${esc((st.pins || []).map((x) => x.m + ' | ' + (x.at ? x.at : x.from + '-' + x.to)).join('\n'))}</textarea><div class="hint">Matched on the player name as it appears in the app. A range places her at a random spot inside it. Applies when the auction starts or the queue is randomized.</div></div></div>
-      <div class="panel glass" style="margin-top:18px"><h3 class="ph3">Sponsors (footer)</h3><div class="field"><label>One per line: Role | Name</label><textarea class="textarea" id="spText" rows="4">${esc((st.sponsors || []).map((x) => x.role + ' | ' + x.name).join('\n'))}</textarea></div></div>
+      <div class="panel glass" style="margin-top:18px"><h3 class="ph3">Sponsors (footer)</h3><div class="field"><label>One per line: Role | Name | Logo link (optional)</label><textarea class="textarea" id="spText" rows="4">${esc((st.sponsors || []).map((x) => x.role + ' | ' + x.name + (x.logo ? ' | ' + x.logo : '')).join('\n'))}</textarea></div></div>
       <div class="row-gap" style="margin-top:18px"><button class="btn lg" id="save">Save settings</button></div>`;
       wireNav(b);
       b.addEventListener('click', (e) => {
@@ -290,7 +290,7 @@ export function adminSettingsView() {
         const rm = e.target.closest('[data-rm]'); if (rm) rm.closest('.slab').remove();
         if (e.target.closest('#save')) {
           const body = {}; $$('[data-k]', b).forEach((i) => { body[i.dataset.k] = i.value; }); $$('[data-sw]', b).forEach((i) => { body[i.dataset.sw] = i.checked; });
-          body.sponsors = $('#spText', b).value.split('\n').map((l) => { const [r, ...n] = l.split('|'); return n.length ? { role: r.trim(), name: n.join('|').trim() } : { role: '', name: r.trim() }; }).filter((q) => q.name);
+          body.sponsors = $('#spText', b).value.split('\n').map((l) => { const [r, n, lg] = l.split('|').map((x) => (x || '').trim()); return n ? { role: r, name: n, logo: lg || '' } : { role: '', name: r, logo: '' }; }).filter((q) => q.name);
           body.pins = $('#pinText', b).value.split('\n').map((l) => { const [m, pos] = l.split('|').map((x) => x.trim()); if (!m || !pos) return null; const r = pos.match(/^(\d+)\s*[-–]\s*(\d+)$/); return r ? { m, from: +r[1], to: +r[2] } : { m, at: +pos }; }).filter(Boolean);
           body.slabs = $$('.slab', b).map((r) => ({ upTo: $('[data-up]', r).value, step: $('[data-step]', r).value }));
           run(() => A.put('/settings', body), 'Settings saved');

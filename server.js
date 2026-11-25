@@ -27,6 +27,10 @@ for (const d of [DATA_DIR, UPLOADS, path.join(UPLOADS, 'players'), path.join(UPL
 // A local file and the committed /seed folder are only fallbacks.
 const SEED_DIR = path.join(__dirname, 'seed');
 const EPOCH = process.env.STATE_EPOCH || '1';
+// DB_SCHEMA keeps this app's tables in their own schema, so it can share a database with another app safely
+const SCHEMA = (process.env.DB_SCHEMA || '').replace(/[^a-z0-9_]/gi, '');
+const T_KV = SCHEMA ? SCHEMA + '.kv' : 'kv';
+const T_SNAPS = SCHEMA ? SCHEMA + '.snaps' : 'snaps';
 const DB_URL = process.env.DATABASE_URL || '';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const dbStatus = { configured: !!DB_URL, ok: false, loadedFrom: 'seed', lastSave: 0, error: '' };
@@ -39,9 +43,10 @@ if (DB_URL) {
   } catch (e) { dbStatus.error = e.message; console.error('DB config error:', e.message); }
 }
 async function dbLoad() {
-  await pool.query('create table if not exists kv (k text primary key, v jsonb not null, epoch text, updated_at timestamptz default now())');
-  await pool.query('create table if not exists snaps (id bigserial primary key, ts timestamptz default now(), note text, v jsonb not null)');
-  const r = await pool.query("select v, epoch from kv where k = 'state'");
+  if (SCHEMA) await pool.query('create schema if not exists ' + SCHEMA);
+  await pool.query('create table if not exists ' + T_KV + ' (k text primary key, v jsonb not null, epoch text, updated_at timestamptz default now())');
+  await pool.query('create table if not exists ' + T_SNAPS + ' (id bigserial primary key, ts timestamptz default now(), note text, v jsonb not null)');
+  const r = await pool.query("select v, epoch from " + T_KV + " where k = 'state'");
   if (!r.rows.length) return { none: true };
   if (r.rows[0].epoch !== EPOCH) return { none: true, stale: true };
   return { state: r.rows[0].v };
@@ -88,7 +93,7 @@ async function flushDb() {
   try {
     do {
       dbDirty = false;
-      await pool.query("insert into kv (k, v, epoch, updated_at) values ('state', $1::jsonb, $2, now()) on conflict (k) do update set v = excluded.v, epoch = excluded.epoch, updated_at = now()", [JSON.stringify(state), EPOCH]);
+      await pool.query("insert into " + T_KV + " (k, v, epoch, updated_at) values ('state', $1::jsonb, $2, now()) on conflict (k) do update set v = excluded.v, epoch = excluded.epoch, updated_at = now()", [JSON.stringify(state), EPOCH]);
       dbStatus.ok = true; dbStatus.error = ''; dbStatus.lastSave = Date.now();
     } while (dbDirty);
   } catch (e) { dbStatus.ok = false; dbStatus.error = e.message; console.error('DB save failed:', e.message); dbDirty = false; setTimeout(flushDb, 3000); }
@@ -97,8 +102,8 @@ async function flushDb() {
 async function snapDb(note) {
   if (!pool || !dbWrite) return;
   try {
-    await pool.query('insert into snaps (note, v) values ($1, $2::jsonb)', [note, JSON.stringify(state)]);
-    await pool.query('delete from snaps where id < (select max(id) - 400 from snaps)');
+    await pool.query('insert into ' + T_SNAPS + ' (note, v) values ($1, $2::jsonb)', [note, JSON.stringify(state)]);
+    await pool.query('delete from ' + T_SNAPS + ' where id < (select max(id) - 400 from ' + T_SNAPS + ')');
   } catch (e) { console.error('snapshot failed:', e.message); }
 }
 
@@ -239,12 +244,12 @@ const mutate = (fn) => wrap(async (req, res) => {
 const clean = (v) => String(v ?? '').trim();
 app.get('/api/admin/snapshots', admin, wrap(async () => {
   if (!pool) return { snapshots: [] };
-  const r = await pool.query("select id, ts, note, jsonb_array_length(v->'players') as players, (select count(*) from jsonb_array_elements(v->'players') p where p->>'status' = 'sold') as sold from snaps order by id desc limit 40");
+  const r = await pool.query("select id, ts, note, jsonb_array_length(v->'players') as players, (select count(*) from jsonb_array_elements(v->'players') p where p->>'status' = 'sold') as sold from " + T_SNAPS + " order by id desc limit 40");
   return { snapshots: r.rows };
 }));
 app.post('/api/admin/snapshots/:id/restore', admin, mutate(async (req) => {
   if (!pool) throw Object.assign(new Error('No database configured'), { status: 400 });
-  const r = await pool.query('select v from snaps where id = $1', [Number(req.params.id)]);
+  const r = await pool.query('select v from ' + T_SNAPS + ' where id = $1', [Number(req.params.id)]);
   if (!r.rows.length) throw Object.assign(new Error('Snapshot not found'), { status: 404 });
   const b = r.rows[0].v;
   state = { ...E.defaultState(), ...b, settings: { ...E.defaultSettings(), ...(b.settings || {}) } };
@@ -411,6 +416,8 @@ function importRows(headers, rows, mapping, mode) {
   for (const r of rows) {
     let name = titleCase(clean(r[mapping.name]).replace(/\s+ji$/i, ''));
     if (!name) continue;
+    // a captain who registered under a shorter name (seed/event.json "aliases") is imported under her full name
+    for (const x of EV.teams || []) if (x.captain && (x.aliases || []).some((a) => norm(a) === norm(name))) name = x.captain;
     if (excluded.has(norm(name))) { skipped++; continue; }
     const extra = {}; const priv = {};
     headers.forEach((h, i) => {
@@ -657,7 +664,7 @@ let closing = false;
 async function shutdown(sig) {
   if (closing) return; closing = true;
   console.log('Shutting down on', sig, '- saving state');
-  try { writeFileNow(); if (pool && dbWrite) await Promise.race([pool.query("insert into kv (k, v, epoch, updated_at) values ('state', $1::jsonb, $2, now()) on conflict (k) do update set v = excluded.v, epoch = excluded.epoch, updated_at = now()", [JSON.stringify(state), EPOCH]), sleep(4000)]); } catch { /* best effort */ }
+  try { writeFileNow(); if (pool && dbWrite) await Promise.race([pool.query("insert into " + T_KV + " (k, v, epoch, updated_at) values ('state', $1::jsonb, $2, now()) on conflict (k) do update set v = excluded.v, epoch = excluded.epoch, updated_at = now()", [JSON.stringify(state), EPOCH]), sleep(4000)]); } catch { /* best effort */ }
   process.exit(0);
 }
 process.on('SIGTERM', () => shutdown('SIGTERM'));

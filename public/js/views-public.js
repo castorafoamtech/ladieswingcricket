@@ -218,7 +218,7 @@ export function playersView(openPlayer) {
   const apply = (s) => {
     const { T } = idx(s);
     let list = s.players.slice();
-    if (F.status !== 'all') list = list.filter((p) => (F.status === 'sold' ? p.status === 'sold' || p.status === 'retained' : p.status === F.status));
+    if (F.status !== 'all') list = list.filter((p) => p.status === F.status);
     if (F.level !== 'all') list = list.filter((p) => p.level === F.level);
     if (F.team !== 'all') list = list.filter((p) => p.teamId === F.team);
     if (F.q) list = list.filter((p) => p.name.toLowerCase().includes(F.q.toLowerCase()));
@@ -240,7 +240,7 @@ export function playersView(openPlayer) {
     const c = counts(s);
     const tab = (k, l, n) => `<button class="chip ${F.status === k ? 'on' : ''}" data-st="${k}">${l} <b>${n}</b></button>`;
     return `<div class="page-title"><h1>The <em>players</em></h1><p>Browse every player. Click a photo to open and flip through.</p></div>
-    <div class="toolbar glass"><div class="grp">${tab('all', 'All', c.total)}${tab('pending', 'Pending', c.pending)}${tab('sold', 'Sold', c.sold + c.retained)}${tab('unsold', 'Unsold', c.unsold)}</div>
+    <div class="toolbar glass"><div class="grp">${tab('all', 'All', c.total)}${tab('pending', 'Pending', c.pending)}${tab('retained', 'Captains', c.retained)}${tab('sold', 'Sold', c.sold)}${tab('unsold', 'Unsold', c.unsold)}</div>
       <input class="input" id="fq" placeholder="Search name…" value="${esc(F.q)}">
       <select class="select" id="fl"><option value="all">How often: any</option>${Object.entries(LEVEL).map(([k, v]) => `<option value="${k}" ${F.level === k ? 'selected' : ''}>${v.label}</option>`).join('')}</select>
       <select class="select" id="ft"><option value="all">All teams</option>${s.teams.map((t) => `<option value="${t.id}" ${F.team === t.id ? 'selected' : ''}>${esc(t.name)}</option>`).join('')}</select>

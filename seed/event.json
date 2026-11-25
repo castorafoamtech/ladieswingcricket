@@ -11,7 +11,10 @@
         "secondary": "#D9A84E",
         "pattern": "solid"
       },
-      "captain": "Ami Jiten Shah"
+      "captain": "Ami Jiten Shah",
+      "aliases": [
+        "Ami Shah"
+      ]
     },
     {
       "name": "Kreyansh Mavericks",
@@ -101,7 +104,7 @@
     "purse": 5000000,
     "basePrice": 100000,
     "retainedPrice": 500000,
-    "squadSize": 8,
+    "squadSize": 9,
     "slabs": [
       {
         "upTo": 500000,
@@ -115,5 +118,5 @@
     "eventName": "Queens Premier League",
     "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 7
+  "version": 8
 }

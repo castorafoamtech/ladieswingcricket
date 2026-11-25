@@ -458,6 +458,7 @@ function importRows(headers, rows, mapping, mode) {
     E.setRetained(state, t.id, [{ playerId: p.id, price: state.settings.retainedPrice || 0 }]);
     t.owner = (IMPORT_CFG.owners || {})[teamName] || tc(clean(p.name)); retained++;
   }
+  applyLevelFixes();
   retained += applyCaptains();
   return { added, skipped, retained };
 }
@@ -494,6 +495,14 @@ app.post('/api/admin/import/sync', admin, wrap(async (req, res) => {
 // Load the registration sheet by itself when the app starts with no players (survives free-plan restarts)
 // Each team's owner-captain (seed/event.json) is retained at the retained price.
 // Matched to a registered player by name; added as a new player if she did not register.
+// Manual corrections to "how often she plays" (seed/import.json "levels": { "Player Name": "yes|sometimes|rarely|no" })
+function applyLevelFixes() {
+  const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  for (const [n, lv] of Object.entries(IMPORT_CFG.levels || {})) {
+    const p = state.players.find((q) => nm(q.name) === nm(n));
+    if (p && ['yes', 'sometimes', 'rarely', 'no'].includes(lv)) p.level = lv;
+  }
+}
 function applyCaptains() {
   const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   let n = 0;
@@ -509,7 +518,7 @@ function applyCaptains() {
   }
   return n;
 }
-if (state.players.length && state.auction.phase === 'idle') applyCaptains();
+if (state.players.length) { applyLevelFixes(); if (state.auction.phase === 'idle') applyCaptains(); }
 
 async function bootImport(attempt = 1) {
   if (!IMPORT_CFG.sheetUrl || state.players.length || state.auction.phase !== 'idle') return;

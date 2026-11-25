@@ -739,3 +739,7 @@ nav.main a{padding:10px 12px;letter-spacing:.1em}
 .hero-brand .emblem{height:44px}
 .hero-brand small{letter-spacing:.22em;font-size:11px;color:var(--muted)}
 .hero-brand span b{color:#fff;font-size:14px}
+
+.hero-brand{flex-wrap:wrap;row-gap:12px}
+.hero-brand .title-sp img.wide{height:58px;box-shadow:none;border-radius:0;filter:drop-shadow(0 6px 18px rgba(0,0,0,.4))}
+.spon img[src$=".webp"]{border-radius:0}

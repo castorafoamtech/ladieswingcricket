@@ -44,6 +44,11 @@
         "role": "Title Sponsor",
         "name": "Tivara Silver Jewel",
         "logo": "/assets/sponsors/tivara.jpg"
+      },
+      {
+        "role": "Powered By",
+        "name": "Orchid Beauty Care & Bambaiwala & Co. by Riddhi Gaurav Shah",
+        "logo": "/assets/sponsors/orchid-bambaiwala.webp"
       }
     ],
     "purse": 5000000,
@@ -63,5 +68,5 @@
     "eventName": "Queens Premier League",
     "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 3
+  "version": 4
 }

@@ -368,8 +368,9 @@ if (!state.settings.pins.length && (IMPORT_CFG.pins || []).length) state.setting
 // Teams and sponsors (seed/event.json) are loaded once, on a fresh start
 try {
   const EV = JSON.parse(fs.readFileSync(path.join(SEED_DIR, 'event.json'), 'utf8'));
-  if (!state.teams.length && Array.isArray(EV.teams)) {
-    for (const x of EV.teams) state.teams.push({ id: E.uid('t'), name: x.name, short: x.short || '', color: x.color || '#FF4D8D', owner: x.owner || '', logo: x.logo || '', ownerPhoto: '', purse: null, squadSize: null, jersey: x.jersey || { primary: x.color, secondary: '#0F4233', pattern: 'solid' } });
+  // add any team from the seed that isn't in the app yet (matched by name), only before the auction starts
+  if (Array.isArray(EV.teams) && state.auction.phase === 'idle') {
+    for (const x of EV.teams.filter((t) => !state.teams.some((y) => y.name.toLowerCase() === t.name.toLowerCase()))) state.teams.push({ id: E.uid('t'), name: x.name, short: x.short || '', color: x.color || '#FF4D8D', owner: x.owner || '', logo: x.logo || '', ownerPhoto: '', purse: null, squadSize: null, jersey: x.jersey || { primary: x.color, secondary: '#0F4233', pattern: 'solid' } });
   }
   // apply the event's rules once per seed version, only before the auction has started
   if (EV.settings && (state.meta.eventSeed || 0) < (EV.version || 1) && state.auction.phase === 'idle') {

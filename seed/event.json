@@ -35,6 +35,18 @@
         "secondary": "#E8461E",
         "pattern": "solid"
       }
+    },
+    {
+      "name": "Krivam Fighters",
+      "short": "KF",
+      "color": "#2A8FD8",
+      "owner": "",
+      "logo": "/assets/teams/krivam-fighters.jpg",
+      "jersey": {
+        "primary": "#14244A",
+        "secondary": "#4FB6F0",
+        "pattern": "solid"
+      }
     }
   ],
   "settings": {
@@ -68,5 +80,5 @@
     "eventName": "Queens Premier League",
     "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 4
+  "version": 5
 }

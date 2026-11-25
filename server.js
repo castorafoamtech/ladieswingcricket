@@ -366,14 +366,16 @@ let IMPORT_CFG = { sheetUrl: '', owners: {}, exclude: [], photoFocus: {}, retain
 try { IMPORT_CFG = { ...IMPORT_CFG, ...JSON.parse(fs.readFileSync(path.join(SEED_DIR, 'import.json'), 'utf8')) }; } catch { /* optional */ }
 if (!state.settings.pins.length && (IMPORT_CFG.pins || []).length) state.settings.pins = IMPORT_CFG.pins;
 // Teams and sponsors (seed/event.json) are loaded once, on a fresh start
+let EV = {};
 try {
-  const EV = JSON.parse(fs.readFileSync(path.join(SEED_DIR, 'event.json'), 'utf8'));
+  EV = JSON.parse(fs.readFileSync(path.join(SEED_DIR, 'event.json'), 'utf8'));
   // add any team from the seed that isn't in the app yet (matched by name), only before the auction starts
   if (Array.isArray(EV.teams) && state.auction.phase === 'idle') {
     for (const x of EV.teams.filter((t) => !state.teams.some((y) => y.name.toLowerCase() === t.name.toLowerCase()))) state.teams.push({ id: E.uid('t'), name: x.name, short: x.short || '', color: x.color || '#FF4D8D', owner: x.owner || '', logo: x.logo || '', ownerPhoto: '', purse: null, squadSize: null, jersey: x.jersey || { primary: x.color, secondary: '#0F4233', pattern: 'solid' } });
   }
   // apply the event's rules once per seed version, only before the auction has started
   if (EV.settings && (state.meta.eventSeed || 0) < (EV.version || 1) && state.auction.phase === 'idle') {
+    for (const x of EV.teams || []) { const t = state.teams.find((y) => y.name.toLowerCase() === x.name.toLowerCase()); if (t && x.owner) t.owner = x.owner; }
     Object.assign(state.settings, EV.settings);
     state.meta.eventSeed = EV.version || 1;
   }
@@ -449,6 +451,7 @@ function importRows(headers, rows, mapping, mode) {
     E.setRetained(state, t.id, [{ playerId: p.id, price: state.settings.retainedPrice || 0 }]);
     t.owner = (IMPORT_CFG.owners || {})[teamName] || tc(clean(p.name)); retained++;
   }
+  retained += applyCaptains();
   return { added, skipped, retained };
 }
 app.post('/api/admin/import/commit', admin, mutate((req) => {
@@ -482,6 +485,25 @@ app.post('/api/admin/import/sync', admin, wrap(async (req, res) => {
 }));
 
 // Load the registration sheet by itself when the app starts with no players (survives free-plan restarts)
+// Each team's owner-captain (seed/event.json) is retained at the retained price.
+// Matched to a registered player by name; added as a new player if she did not register.
+function applyCaptains() {
+  const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  let n = 0;
+  for (const x of EV.teams || []) {
+    if (!x.captain) continue;
+    const t = state.teams.find((y) => nm(y.name) === nm(x.name));
+    if (!t || state.players.some((p) => p.teamId === t.id && p.status === 'retained')) continue;
+    let p = state.players.find((q) => nm(q.name) === nm(x.captain) && q.status === 'pending');
+    if (!p) { p = newPlayer({ name: x.captain, photo: '', level: 'yes', extra: { Role: 'Captain' } }); state.players.push(p); }
+    else p.extra = { ...(p.extra || {}), Role: 'Captain' };
+    E.setRetained(state, t.id, [{ playerId: p.id, price: state.settings.retainedPrice || 0 }]);
+    t.owner = x.owner || x.captain; n++;
+  }
+  return n;
+}
+if (state.players.length && state.auction.phase === 'idle') applyCaptains();
+
 async function bootImport(attempt = 1) {
   if (!IMPORT_CFG.sheetUrl || state.players.length || state.auction.phase !== 'idle') return;
   try {

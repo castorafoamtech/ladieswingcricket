@@ -4,25 +4,27 @@
       "name": "Ami's Warriors",
       "short": "AW",
       "color": "#D9A84E",
-      "owner": "",
+      "owner": "Ami Jiten Shah",
       "logo": "/assets/teams/amis-warriors.jpg",
       "jersey": {
         "primary": "#1A1A1A",
         "secondary": "#D9A84E",
         "pattern": "solid"
-      }
+      },
+      "captain": "Ami Jiten Shah"
     },
     {
       "name": "Kreyansh Mavericks",
       "short": "KM",
       "color": "#2148C0",
-      "owner": "",
+      "owner": "Dipa Bhavin Doshi",
       "logo": "/assets/teams/kreyansh-mavericks.jpg",
       "jersey": {
         "primary": "#1B2F8A",
         "secondary": "#F5C33B",
         "pattern": "solid"
-      }
+      },
+      "captain": "Dipa Bhavin Doshi"
     },
     {
       "name": "Kanadia Fire Queens",
@@ -34,19 +36,47 @@
         "primary": "#1A1A1A",
         "secondary": "#E8461E",
         "pattern": "solid"
-      }
+      },
+      "captain": "Monika Rajen Shah"
     },
     {
       "name": "Krivam Fighters",
       "short": "KF",
       "color": "#2A8FD8",
-      "owner": "",
+      "owner": "Rinkal Mehul Shah",
       "logo": "/assets/teams/krivam-fighters.jpg",
       "jersey": {
         "primary": "#14244A",
         "secondary": "#4FB6F0",
         "pattern": "solid"
-      }
+      },
+      "captain": "Rinkal Mehul Shah"
+    },
+    {
+      "name": "Ramya Royals",
+      "short": "RR",
+      "color": "#7B2FBE",
+      "owner": "Bhumi Rahil Sarvaiya",
+      "logo": "/assets/teams/ramya-royals.jpg",
+      "jersey": {
+        "primary": "#4B1A7A",
+        "secondary": "#F2C94C",
+        "pattern": "solid"
+      },
+      "captain": "Bhumi Rahil Sarvaiya"
+    },
+    {
+      "name": "Himadri's Hitterzz",
+      "short": "HH",
+      "color": "#2B3FB8",
+      "owner": "Himadri Miral Mehta",
+      "logo": "/assets/teams/himadris-hitterzz.jpg",
+      "jersey": {
+        "primary": "#1A237E",
+        "secondary": "#F2B33D",
+        "pattern": "solid"
+      },
+      "captain": "Himadri Miral Mehta"
     }
   ],
   "settings": {
@@ -71,7 +101,7 @@
     "purse": 5000000,
     "basePrice": 100000,
     "retainedPrice": 500000,
-    "squadSize": 14,
+    "squadSize": 8,
     "slabs": [
       {
         "upTo": 500000,
@@ -85,5 +115,5 @@
     "eventName": "Queens Premier League",
     "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 6
+  "version": 7
 }

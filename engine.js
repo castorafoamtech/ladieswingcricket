@@ -11,8 +11,8 @@ export function uid(prefix = 'id') {
 
 export function defaultSettings() {
   return {
-    eventName: 'Ladies Wing Cricket Tournament',
-    organiser: 'JITO Ladies Wing Bhavnagar',
+    eventName: 'Queens Premier League',
+    organiser: 'JITO Bhavnagar Ladies Wing',
     presentedBy: '',
     coSponsor: '',
     auctionVenue: '',

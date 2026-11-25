@@ -59,7 +59,9 @@
         "upTo": null,
         "step": 100000
       }
-    ]
+    ],
+    "eventName": "Queens Premier League",
+    "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 2
+  "version": 3
 }

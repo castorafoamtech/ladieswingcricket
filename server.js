@@ -592,7 +592,7 @@ app.post('/api/admin/auction/reset', admin, A((s) => E.resetAuction(s)));
 app.get('/api/admin/export', admin, wrap((req, res) => {
   const copy = JSON.parse(JSON.stringify(state));
   copy.auction.queue = [];
-  res.setHeader('Content-Disposition', 'attachment; filename="ladies-cricket-auction-backup.json"');
+  res.setHeader('Content-Disposition', 'attachment; filename="qpl-auction-backup.json"');
   res.json(copy);
 }));
 app.post('/api/admin/restore', admin, mutate((req) => {
@@ -645,6 +645,6 @@ if (SELF) setInterval(() => { fetch(SELF + '/api/health', { signal: AbortSignal.
 server.listen(PORT, () => {
   setTimeout(() => cacheAllPhotos(), 3000);
   setTimeout(() => bootImport(), 1500);
-  console.log(`JITO Ladies Wing Cricket Auction running on http://localhost:${PORT}`);
+  console.log(`QPL Auction running on http://localhost:${PORT}`);
   if (ADMIN_PASSWORD === DEFAULT_PW) console.log('WARNING: using the default admin password. Set ADMIN_PASSWORD before going live.');
 });

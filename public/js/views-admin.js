@@ -305,7 +305,7 @@ export function adminDataView() {
   const squadTools = (box) => {
     let data = null;
     const fm = (m) => String(m || '').replace(/[^0-9+]/g, '') || '—';
-    const waText = (tm) => `*${tm.name}* squad${tm.owner ? '\nOwner: ' + tm.owner : ''}\n\n` + tm.players.map((p, i) => `${i + 1}. ${p.name} – ${fm(p.mobile)}${p.retained ? ' (Retained)' : ''}`).join('\n') + `\n\nJITO Ladies Wing Bhavnagar · Cricket Tournament`;
+    const waText = (tm) => `*${tm.name}* squad${tm.owner ? '\nOwner: ' + tm.owner : ''}\n\n` + tm.players.map((p, i) => `${i + 1}. ${p.name} – ${fm(p.mobile)}${p.retained ? ' (Retained)' : ''}`).join('\n') + `\n\nQueens Premier League · JITO Bhavnagar Ladies Wing`;
     const csvCell = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
     const csv = (teams) => '﻿' + [['Team', 'Owner', 'Sr', 'Player', 'Mobile', 'Type', 'Price (Rs)'], ...teams.flatMap((tm) => tm.players.map((p, i) => [tm.name, tm.owner, i + 1, p.name, fm(p.mobile), p.retained ? 'Retained' : 'Auction', p.retained ? 0 : p.price]))].map((r) => r.map(csvCell).join(',')).join('\r\n');
     const save = (text, name, type) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); };
@@ -313,7 +313,7 @@ export function adminDataView() {
     const printPDF = (teams) => {
       const pages = teams.map((tm) => `<section><div class="hd"><h1>${esc(tm.name)}</h1><p>${tm.owner ? 'Owner: <b>' + esc(tm.owner) + '</b> · ' : ''}${tm.players.length} players</p></div>
         <table><thead><tr><th>#</th><th>Player</th><th>Mobile</th><th>Type</th></tr></thead><tbody>${tm.players.map((p, i) => `<tr class="${p.retained ? 'r' : ''}"><td>${i + 1}</td><td>${esc(p.name)}</td><td>${esc(fm(p.mobile))}</td><td>${p.retained ? 'Retained' : 'Auction'}</td></tr>`).join('')}</tbody></table>
-        <footer>JITO Ladies Wing Bhavnagar · Cricket Tournament</footer></section>`).join('');
+        <footer>Queens Premier League · JITO Bhavnagar Ladies Wing</footer></section>`).join('');
       const html = `<!doctype html><html><head><meta charset="utf-8"><title>Team squads</title><style>
         @page{size:A4;margin:14mm}body{font-family:Arial,Helvetica,sans-serif;color:#13204a;margin:0}section{page-break-after:always;min-height:250mm;position:relative}section:last-child{page-break-after:auto}
         .hd{background:#082463;color:#fff;padding:12px 16px;border-bottom:5px solid #dcf01c;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hd h1{margin:0;font-size:26px;text-transform:uppercase;letter-spacing:.03em}.hd p{margin:4px 0 0;color:#dcf01c}
@@ -349,7 +349,7 @@ export function adminDataView() {
       <div class="panel glass"><h3 class="ph3">Server snapshots</h3><p style="color:var(--muted);margin-bottom:10px">The server saves a copy after every sale, unsold and start. Use this only if something goes wrong.</p><div id="snBody" style="color:var(--muted)">Loading…</div></div>
       <div class="panel glass"><h3 class="ph3" style="color:var(--red)">Danger zone</h3><p style="color:var(--muted);margin-bottom:14px">Erase all players, teams and results.</p><button class="btn red" id="dX">Reset everything</button></div></div>`;
       wireNav(b); squadTools(b);
-      $('#dB', b).onclick = () => dl('/export', 'ladies-cricket-auction-backup.json'); $('#dR', b).onclick = () => dl('/results.csv', 'auction-results.csv');
+      $('#dB', b).onclick = () => dl('/export', 'qpl-auction-backup.json'); $('#dR', b).onclick = () => dl('/results.csv', 'auction-results.csv');
       $('#dU', b).onchange = async (e) => { const f = e.target.files[0]; if (!f) return; try { const j = JSON.parse(await f.text()); if (await confirmBox('Restore this backup? Current data is replaced.', 'Restore')) run(() => A.post('/restore', j), 'Restored'); } catch { toast('Not a valid backup file', 'err'); } };
       api('/api/admin/snapshots', { admin: true }).then(({ snapshots }) => {
         const el = $('#snBody', b); if (!el) return;

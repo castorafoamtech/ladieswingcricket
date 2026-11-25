@@ -1,4 +1,4 @@
-# JITO Ladies Wing Bhavnagar · Ladies Cricket Tournament · Player Auction
+# Queens Premier League (QPL) · JITO Bhavnagar Ladies Wing · Player Auction
 
 Live auction web app. One Node server keeps everything in sync over WebSockets: the admin runs the auction, everyone else watches live.
 

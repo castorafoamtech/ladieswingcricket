@@ -18,16 +18,16 @@ export function stageHTML(state) {
     const ex = Object.entries(p.extra || {}).slice(0, 3);
     return `<div class="tag"><i></i>On the block</div><div class="count">PLAYER ${done + 1} · ${leftN} IN QUEUE</div>
     <div class="stage-body">
-      <div class="p-photo" id="sPhoto"><div class="no">#${done + 1}</div><div class="frame"><img src="${esc(photoOf(p))}" alt=""${pf(p)}><div class="shine"></div></div></div>
+      <div class="p-photo" id="sPhoto"><div class="no">#${done + 1}</div><div class="frame"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" alt=""${pf(p)}><div class="shine"></div></div></div>
       <div class="p-info"><div class="name">${esc(p.name)}</div>
         <div class="row">${levelBadge(p)}</div>
         <div class="baseprice">Base price <b>${inr(playerBase(state, p))}</b></div>
         ${ex.length ? `<div class="extras">${ex.map(([k, v]) => `<span class="chip">${esc(k)}: ${esc(v)}</span>`).join('')}</div>` : ''}</div>
       <div class="bid-panel"><div class="lbl">${c.bids.length ? 'Current bid' : 'Opening price'}</div>
         <div class="bid-amount" id="sAmt">${inr(c.price)}</div>
-        <div class="holder ${t ? '' : 'empty'}" id="sHolder" style="--tc:${t ? t.color : '#fff'}">${t ? `<img class="logo" src="${esc(logoOf(t))}" alt=""><div class="who"><small>Highest bidder</small><b>${esc(t.name)}</b></div>` : 'Waiting for first bid…'}</div>
+        <div class="holder ${t ? '' : 'empty'}" id="sHolder" style="--tc:${t ? t.color : '#fff'}">${t ? `<img loading="lazy" decoding="async" class="logo" src="${esc(logoOf(t))}" alt=""><div class="who"><small>Highest bidder</small><b>${esc(t.name)}</b></div>` : 'Waiting for first bid…'}</div>
         <div class="next-line"><span>Next bid</span><b>${inr(nextBidAmount(state))}</b></div>
-        <div class="bid-log" id="sLog">${c.bids.slice(-4).reverse().map((b) => { const bt = T.get(b.teamId); return bt ? `<div class="b"><img src="${esc(logoOf(bt))}" alt=""><b>${esc(bt.name)}</b><span>${inr(b.amount)}</span></div>` : ''; }).join('')}</div>
+        <div class="bid-log" id="sLog">${c.bids.slice(-4).reverse().map((b) => { const bt = T.get(b.teamId); return bt ? `<div class="b"><img loading="lazy" decoding="async" src="${esc(logoOf(bt))}" alt=""><b>${esc(bt.name)}</b><span>${inr(b.amount)}</span></div>` : ''; }).join('')}</div>
       </div></div>`;
   }
   const ph = a.phase;
@@ -61,9 +61,9 @@ function highlightsHTML(state) {
   const cap = Math.max(state.settings.purse || 0, ...rows.map((r) => r.left), 1);
   const tile = (l, v, sub, col) => `<div class="stat glass" style="--c:${col}"><small>${l}</small><b class="mono hl-v">${v}</b><div class="sub">${sub}</div></div>`;
   return `<div class="sec-title"><h2>Auction <em>highlights</em></h2><div class="bar"></div></div>
-  <div class="top3">${top.map((h, i) => { const p = P.get(h.playerId); const t = T.get(h.teamId); return `<div class="tp glass" data-pid="${p.id}" style="--m:${MEDAL[i]}"><div class="rk">#${i + 1}</div><div class="ph"><img src="${esc(photoOf(p))}" alt=""${pf(p)}></div><div class="in"><small>${i === 0 ? 'Most expensive' : i === 1 ? 'Second highest' : 'Third highest'}</small><b>${esc(p.name)}</b><div class="pr mono">${inr(h.price)}</div>${t ? `<div class="tm"><img src="${esc(logoOf(t))}" alt="">${esc(t.name)}</div>` : ''}</div></div>`; }).join('')}</div>
+  <div class="top3">${top.map((h, i) => { const p = P.get(h.playerId); const t = T.get(h.teamId); return `<div class="tp glass" data-pid="${p.id}" style="--m:${MEDAL[i]}"><div class="rk">#${i + 1}</div><div class="ph"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" alt=""${pf(p)}></div><div class="in"><small>${i === 0 ? 'Most expensive' : i === 1 ? 'Second highest' : 'Third highest'}</small><b>${esc(p.name)}</b><div class="pr mono">${inr(h.price)}</div>${t ? `<div class="tm"><img loading="lazy" decoding="async" src="${esc(logoOf(t))}" alt="">${esc(t.name)}</div>` : ''}</div></div>`; }).join('')}</div>
   <div class="stats hl">${tile('Average price', inr(total / sold.length), `across ${sold.length} player${sold.length > 1 ? 's' : ''} sold`, '#6cb6ff')}${tile('Hottest battle', `${(hot.bids || []).length} bids`, esc((P.get(hot.playerId) || {}).name || ''), '#ff4d5e')}</div>
-  <div class="purses glass"><small>Purse left per team</small>${rows.map(({ t, left }) => `<div class="pu" style="--tc:${t.color}"><img src="${esc(logoOf(t))}" alt=""><b>${esc(t.name)}</b><div class="bar2"><i style="width:${Math.max(2, (left / cap) * 100)}%"></i></div><span class="mono">${inr(left)}</span></div>`).join('')}</div>`;
+  <div class="purses glass"><small>Purse left per team</small>${rows.map(({ t, left }) => `<div class="pu" style="--tc:${t.color}"><img loading="lazy" decoding="async" src="${esc(logoOf(t))}" alt=""><b>${esc(t.name)}</b><div class="bar2"><i style="width:${Math.max(2, (left / cap) * 100)}%"></i></div><span class="mono">${inr(left)}</span></div>`).join('')}</div>`;
 }
 function runCounts(root) {
   $$('[data-count]', root).forEach((el) => countTo(el, el.dataset.count, el.dataset.money === '1' ? (n) => inr(n) : (n) => String(Math.round(n))));
@@ -73,7 +73,7 @@ export function teamCardHTML(state, t, leadId) {
   const st = teamStats(state, t);
   const pct = st.squadSize ? Math.min(100, (st.filled / st.squadSize) * 100) : 0;
   return `<a class="tcard glass ${leadId === t.id ? 'lead' : ''}" href="#/team/${t.id}" style="--tc:${t.color}" data-tid="${t.id}">
-    <div class="head"><img class="logo" src="${esc(logoOf(t))}" alt=""><div><h3>${esc(t.name)}</h3><div class="owner">Owner · <b>${esc(t.owner || '—')}</b></div></div></div>
+    <div class="head"><img loading="lazy" decoding="async" class="logo" src="${esc(logoOf(t))}" alt=""><div><h3>${esc(t.name)}</h3><div class="owner">Owner · <b>${esc(t.owner || '—')}</b></div></div></div>
     <div class="tc-foot"><span class="chip">${st.filled} / ${st.squadSize} players</span><span class="chip">${inr(st.purseLeft)} left</span></div></a>`;
 }
 
@@ -83,7 +83,7 @@ function recentHTML(state) {
   if (!rows.length) return '';
   return `<div class="sec-title"><h2>Recent <em>results</em></h2><div class="bar"></div></div><div class="pgrid">${rows.map((h) => {
     const p = P.get(h.playerId); if (!p) return ''; const t = h.teamId ? T.get(h.teamId) : null;
-    return `<div class="pcard ${p.status}" data-pid="${p.id}"><div class="ph"><img src="${esc(photoOf(p))}" alt=""${pf(p)}></div><div class="st"><span class="chip ${h.type}">${h.type === 'sold' ? 'Sold' : 'Unsold'}</span></div><div class="meta"><b>${esc(p.name)}</b><small>${t ? `<img src="${esc(logoOf(t))}" alt="">${esc(t.name)}<span class="pr">${inr(h.price)}</span>` : 'Unsold'}</small></div></div>`;
+    return `<div class="pcard ${p.status}" data-pid="${p.id}"><div class="ph"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" alt=""${pf(p)}></div><div class="st"><span class="chip ${h.type}">${h.type === 'sold' ? 'Sold' : 'Unsold'}</span></div><div class="meta"><b>${esc(p.name)}</b><small>${t ? `<img loading="lazy" decoding="async" src="${esc(logoOf(t))}" alt="">${esc(t.name)}<span class="pr">${inr(h.price)}</span>` : 'Unsold'}</small></div></div>`;
   }).join('')}</div>`;
 }
 
@@ -92,7 +92,7 @@ export function homeView() {
   const header = (s) => {
     const st = s.settings;
     const sp = st.sponsors || [];
-    return `<section class="hero"><div class="hero-brand"><img class="emblem" src="/assets/jito-ladies.png" alt="JITO Ladies"><div><small>${esc(st.organiser || 'JITO Ladies Wing Bhavnagar')}</small>${st.presentedBy && !sp.some((x) => /title/i.test(x.role) && x.logo) ? `<span>Presented by <b>${esc(st.presentedBy)}</b>${st.coSponsor ? ` · with ${esc(st.coSponsor)}` : ''}</span>` : ''}</div>${(() => { const t = sp.find((x) => /title/i.test(x.role) && x.logo); return t ? `<div class="title-sp"><small>Title sponsor</small><img src="${esc(t.logo)}" alt="${esc(t.name)}"></div>` : ''; })()}</div>
+    return `<section class="hero"><div class="hero-brand"><img loading="lazy" decoding="async" class="emblem" src="/assets/jito-ladies.png" alt="JITO Ladies"><div><small>${esc(st.organiser || 'JITO Ladies Wing Bhavnagar')}</small>${st.presentedBy && !sp.some((x) => /title/i.test(x.role) && x.logo) ? `<span>Presented by <b>${esc(st.presentedBy)}</b>${st.coSponsor ? ` · with ${esc(st.coSponsor)}` : ''}</span>` : ''}</div>${(() => { const t = sp.find((x) => /title/i.test(x.role) && x.logo); return t ? `<div class="title-sp"><small>Title sponsor</small><img loading="lazy" decoding="async" src="${esc(t.logo)}" alt="${esc(t.name)}"></div>` : ''; })()}</div>
     <div class="hero-title"><div class="l1">${esc(st.eventName || 'Ladies Cricket Tournament')}</div><br><div class="l2"><span>Player Auction</span></div></div>
     <div class="event-chips">${st.auctionDate ? `<span class="chip on">${icon('gavel')}Auction · ${esc(st.auctionDate)}${st.auctionVenue ? ' · ' + esc(st.auctionVenue) : ''}</span>` : ''}${st.date ? `<span class="chip">${icon('cal')}Tournament · ${esc(st.date)}</span>` : ''}${st.time ? `<span class="chip">${icon('clock')}${esc(st.time)}</span>` : ''}${st.venue ? `<span class="chip">${icon('pin')}${esc(st.venue)}</span>` : ''}</div></section>`;
   };
@@ -158,12 +158,12 @@ export function homeView() {
       const h = $('#sHolder', box);
       if (h) {
         h.className = 'holder ' + (t ? 'slam' : 'empty'); h.style.setProperty('--tc', t ? t.color : '#fff');
-        h.innerHTML = t ? `<img class="logo" src="${esc(logoOf(t))}" alt=""><div class="who"><small>Highest bidder</small><b>${esc(t.name)}</b></div>` : 'Waiting for first bid…';
+        h.innerHTML = t ? `<img loading="lazy" decoding="async" class="logo" src="${esc(logoOf(t))}" alt=""><div class="who"><small>Highest bidder</small><b>${esc(t.name)}</b></div>` : 'Waiting for first bid…';
       }
       const nl = $('.next-line b', box); if (nl) nl.textContent = inr(nextBidAmount(s));
       const lbl = $('.bid-panel .lbl', box); if (lbl) lbl.textContent = c.bids.length ? 'Current bid' : 'Opening price';
       const log = $('#sLog', box);
-      if (log) log.innerHTML = c.bids.slice(-4).reverse().map((b) => { const bt = T.get(b.teamId); return bt ? `<div class="b"><img src="${esc(logoOf(bt))}" alt=""><b>${esc(bt.name)}</b><span>${inr(b.amount)}</span></div>` : ''; }).join('');
+      if (log) log.innerHTML = c.bids.slice(-4).reverse().map((b) => { const bt = T.get(b.teamId); return bt ? `<div class="b"><img loading="lazy" decoding="async" src="${esc(logoOf(bt))}" alt=""><b>${esc(bt.name)}</b><span>${inr(b.amount)}</span></div>` : ''; }).join('');
     }
     lastAmt = c.price; lastTeam = c.teamId;
   }
@@ -190,16 +190,16 @@ export function teamView(id) {
     const mine = s.players.filter((p) => p.teamId === t.id && (p.status === 'sold' || p.status === 'retained'));
     const ret = mine.filter((p) => p.status === 'retained');
     const bought = mine.filter((p) => p.status === 'sold').sort((a, b) => (b.price || 0) - (a.price || 0));
-    const cell = (p, role) => p ? `<div class="pl" data-pid="${p.id}" style="cursor:pointer"><img src="${esc(photoOf(p))}" alt=""${pf(p)}><div><small>${role}</small><b>${esc(p.name)}</b></div></div>` : `<div class="pl"><div><small>${role}</small><b style="color:var(--muted)">To be picked</b></div></div>`;
+    const cell = (p, role) => p ? `<div class="pl" data-pid="${p.id}" style="cursor:pointer"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" alt=""${pf(p)}><div><small>${role}</small><b>${esc(p.name)}</b></div></div>` : `<div class="pl"><div><small>${role}</small><b style="color:var(--muted)">To be picked</b></div></div>`;
     const empties = Array.from({ length: st.left }, (_, i) => `<div class="pcard" style="opacity:.55;cursor:default;animation:none"><div class="ph" style="display:grid;place-items:center"><span style="font-family:var(--head);font-size:70px;color:rgba(255,255,255,.25)">?</span></div><div class="meta"><b style="color:var(--muted)">Open slot</b></div></div>`).join('');
-    return `<div class="team-hero" style="--tc:${t.color}"><div class="row"><img class="logo" src="${esc(logoOf(t))}" alt="">
+    return `<div class="team-hero" style="--tc:${t.color}"><div class="row"><img loading="lazy" decoding="async" class="logo" src="${esc(logoOf(t))}" alt="">
       <div><div class="chip" style="margin-bottom:10px"><a href="#/teams">${icon('back')} Teams</a></div><h1>${esc(t.name)}</h1>
-        <div class="owner-line">${t.ownerPhoto ? `<img src="${esc(t.ownerPhoto)}" alt="">` : ''}<div><small>Team owner</small><b>${esc(t.owner || '—')}</b></div></div></div></div>
+        <div class="owner-line">${t.ownerPhoto ? `<img loading="lazy" decoding="async" src="${esc(t.ownerPhoto)}" alt="">` : ''}<div><small>Team owner</small><b>${esc(t.owner || '—')}</b></div></div></div></div>
       <div class="team-stats"><div><small>Squad</small><b>${st.filled}/${st.squadSize}</b></div><div><small>Total spent</small><b>${inr(st.spent)}</b></div><div><small>Top buy</small><b>${inr(st.top)}</b></div><div><small>Purse</small><b>${inr(st.spent + st.purseLeft)}</b></div></div>
       ${s.auction.phase === 'done' ? `<div class="jer-big">${jerseySVG(t)}</div>` : ''}</div>
     ${ret.length ? `<div class="sec-title"><h2>Retained <em>player</em></h2><div class="bar"></div></div><div class="pairs">${ret.map((p) => `<div class="pair">${cell(p, 'Owner · Retained')}</div>`).join('')}</div>` : ''}
     <div class="sec-title"><h2>The <em>squad</em></h2><div class="bar"></div></div>
-    <div class="pgrid">${bought.map((p, i) => `<div class="pcard sold" data-pid="${p.id}" style="animation-delay:${i * 40}ms"><div class="ph"><img src="${esc(photoOf(p))}" alt=""${pf(p)}></div><div class="lv" style="--c:${(LEVEL[p.level] || LEVEL.no).color}"></div><div class="meta"><b>${esc(p.name)}</b><small>${esc((LEVEL[p.level] || LEVEL.no).long)}<span class="pr">${inr(p.price)}</span></small></div></div>`).join('')}${empties}</div>`;
+    <div class="pgrid">${bought.map((p, i) => `<div class="pcard sold" data-pid="${p.id}" style="animation-delay:${i * 40}ms"><div class="ph"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" alt=""${pf(p)}></div><div class="lv" style="--c:${(LEVEL[p.level] || LEVEL.no).color}"></div><div class="meta"><b>${esc(p.name)}</b><small>${esc((LEVEL[p.level] || LEVEL.no).long)}<span class="pr">${inr(p.price)}</span></small></div></div>`).join('')}${empties}</div>`;
   };
   let box; let ids;
   return {
@@ -233,7 +233,7 @@ export function playersView(openPlayer) {
     if (!list.length) return `<div class="empty-state glass"><b>No players match</b>Try clearing the filters.</div>`;
     return `<div class="pgrid">${list.map((p, i) => {
       const t = p.teamId ? T.get(p.teamId) : null; const lv = LEVEL[p.level] || LEVEL.no; const live = cur === p.id;
-      return `<div class="pcard ${p.status} ${live ? 'live' : ''}" data-pid="${p.id}" style="animation-delay:${Math.min(i, 20) * 25}ms"><div class="ph"><img loading="lazy" src="${esc(photoOf(p))}" alt=""${pf(p)}></div><div class="st"><span class="chip ${live ? 'on' : p.status}">${live ? 'On block' : STATUS_LABEL[p.status]}</span></div><div class="lv" style="--c:${lv.color}" title="${lv.long}"></div><div class="meta"><b>${esc(p.name)}</b><small>${t ? `<img src="${esc(logoOf(t))}" alt="">${esc(t.name)}${p.price != null ? `<span class="pr">${inr(p.price)}</span>` : ''}` : esc(lv.long)}</small></div></div>`;
+      return `<div class="pcard ${p.status} ${live ? 'live' : ''}" data-pid="${p.id}" style="animation-delay:${Math.min(i, 20) * 25}ms"><div class="ph"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" alt=""${pf(p)}></div><div class="st"><span class="chip ${live ? 'on' : p.status}">${live ? 'On block' : STATUS_LABEL[p.status]}</span></div><div class="lv" style="--c:${lv.color}" title="${lv.long}"></div><div class="meta"><b>${esc(p.name)}</b><small>${t ? `<img loading="lazy" decoding="async" src="${esc(logoOf(t))}" alt="">${esc(t.name)}${p.price != null ? `<span class="pr">${inr(p.price)}</span>` : ''}` : esc(lv.long)}</small></div></div>`;
     }).join('')}</div>`;
   };
   const shell = (s) => {

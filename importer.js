@@ -45,7 +45,7 @@ export function photoUrl(raw) {
   const u = String(raw || '').trim();
   if (!u) return '';
   const id = driveId(u);
-  if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
+  if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w500`;
   return u;
 }
 

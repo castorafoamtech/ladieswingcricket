@@ -52,10 +52,10 @@ export function consoleView() {
       return `<div class="mini-empty"><div>${ph === 'idle' ? `<b>Auction not started</b><p>Add players &amp; teams, then start the auction.</p>` : ph === 'done' ? `<b>Auction finished</b>` : `<b>No player on the block</b><p>${a.queueCount} players waiting. Press Next player. You will not see who is next.</p>`}</div></div>`;
     }
     const p = P.get(c.playerId); const t = c.teamId ? T.get(c.teamId) : null;
-    return `<div class="mini-stage"><div class="top"><div class="p-photo"><div class="frame"><img src="${esc(photoOf(p))}" alt=""${pf(p)}></div></div>
+    return `<div class="mini-stage"><div class="top"><div class="p-photo"><div class="frame"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" alt=""${pf(p)}></div></div>
       <div style="min-width:0"><div class="name">${esc(p.name)}</div><div style="margin-top:8px">${levelBadge(p)}</div></div></div>
       <div class="bid-amount" style="font-size:72px">${inr(c.price)}</div>
-      <div class="holder ${t ? '' : 'empty'}" style="--tc:${t ? t.color : '#fff'}">${t ? `<img class="logo" src="${esc(logoOf(t))}" alt=""><div class="who"><small>Highest bidder</small><b>${esc(t.name)}</b></div>` : 'No bids yet · base ' + inr(playerBase(s, p))}</div>
+      <div class="holder ${t ? '' : 'empty'}" style="--tc:${t ? t.color : '#fff'}">${t ? `<img loading="lazy" decoding="async" class="logo" src="${esc(logoOf(t))}" alt=""><div class="who"><small>Highest bidder</small><b>${esc(t.name)}</b></div>` : 'No bids yet · base ' + inr(playerBase(s, p))}</div>
       <div class="next-line"><span>Next bid</span><b>${inr(nextBidAmount(s))}</b></div></div>`;
   };
   const padHTML = (s) => {
@@ -64,7 +64,7 @@ export function consoleView() {
       const st = teamStats(s, t); const lead = c && c.teamId === t.id;
       let off = !c || lead; let note = `${st.left} left · ${inr(st.purseLeft)}`;
       if (c && !lead) { const chk = window.__canBid(s, t, amt); if (!chk.ok) { off = true; note = chk.reason; } }
-      return `<div class="padbtn ${lead ? 'lead' : ''} ${off && !lead ? 'off' : ''}" data-bid="${t.id}" style="--tc:${t.color}"><span class="key">${i < 9 ? i + 1 : ''}</span><img src="${esc(logoOf(t))}" alt=""><b>${esc(t.name)}</b><div class="amt">${c ? inr(amt) : '—'}</div><small>${esc(note)}</small></div>`;
+      return `<div class="padbtn ${lead ? 'lead' : ''} ${off && !lead ? 'off' : ''}" data-bid="${t.id}" style="--tc:${t.color}"><span class="key">${i < 9 ? i + 1 : ''}</span><img loading="lazy" decoding="async" src="${esc(logoOf(t))}" alt=""><b>${esc(t.name)}</b><div class="amt">${c ? inr(amt) : '—'}</div><small>${esc(note)}</small></div>`;
     }).join('');
   };
   const ctrlHTML = (s) => {
@@ -81,7 +81,7 @@ export function consoleView() {
     const { P, T } = idx(s);
     return s.auction.history.slice(-12).reverse().map((h) => { const p = P.get(h.playerId); const t = T.get(h.teamId); return p ? `<div class="li ${h.type}"><b>${h.type === 'sold' ? 'SOLD' : 'UNSOLD'}</b> ${esc(p.name)} ${t ? '→ ' + esc(t.name) : ''}<span class="t">${h.type === 'sold' ? inr(h.price) : ''}</span></div>` : ''; }).join('') || '<div class="li" style="color:var(--muted)">Nothing yet</div>';
   };
-  const unsoldHTML = (s) => { const u = s.players.filter((p) => p.status === 'unsold'); return u.length ? u.map((p) => `<div class="li"><img src="${esc(photoOf(p))}" style="width:28px;height:28px;border-radius:8px;object-fit:cover" alt=""> ${esc(p.name)}<span class="t" style="font-size:13px;font-family:var(--label);color:var(--muted)">${LEVEL[p.level]?.label || ''}</span></div>`).join('') : '<div class="li" style="color:var(--muted)">No unsold players</div>'; };
+  const unsoldHTML = (s) => { const u = s.players.filter((p) => p.status === 'unsold'); return u.length ? u.map((p) => `<div class="li"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" style="width:28px;height:28px;border-radius:8px;object-fit:cover" alt=""> ${esc(p.name)}<span class="t" style="font-size:13px;font-family:var(--label);color:var(--muted)">${LEVEL[p.level]?.label || ''}</span></div>`).join('') : '<div class="li" style="color:var(--muted)">No unsold players</div>'; };
   const paint = (s) => {
     const c = counts(s);
     $('#cMini', box).innerHTML = miniHTML(s); const pd = $('#cPad', box); pd.innerHTML = padHTML(s); pd.style.setProperty('--cols', s.teams.length <= 4 ? 2 : s.teams.length <= 6 ? 3 : 4); pd.style.setProperty('--rows', Math.ceil(s.teams.length / (s.teams.length <= 4 ? 2 : s.teams.length <= 6 ? 3 : 4))); $('#cCtl', box).innerHTML = ctrlHTML(s);
@@ -128,7 +128,7 @@ export function adminPlayersView() {
     const { T } = idx(s);
     let list = s.players.filter((p) => (st === 'all' || p.status === st) && (!q || p.name.toLowerCase().includes(q.toLowerCase()) || String(contacts[p.id] || '').replace(/\D/g, '').includes(q.replace(/\D/g, '') || '\u0000')));
     list = list.slice(0, 400);
-    return list.map((p) => `<tr data-id="${p.id}"><td><input type="checkbox" data-sel="${p.id}" ${sel.has(p.id) ? 'checked' : ''}></td><td><label class="up-btn" title="Change photo"><img class="av" src="${esc(photoOf(p))}" alt=""${pf(p)}><input type="file" accept="image/*" data-photo="${p.id}"></label></td><td><b>${esc(p.name)}</b></td><td>${contacts[p.id] ? `<a href="tel:${esc(contacts[p.id].replace(/[^0-9+]/g, ''))}" style="color:inherit;white-space:nowrap">${esc(contacts[p.id])}</a>` : '—'}</td>
+    return list.map((p) => `<tr data-id="${p.id}"><td><input type="checkbox" data-sel="${p.id}" ${sel.has(p.id) ? 'checked' : ''}></td><td><label class="up-btn" title="Change photo"><img loading="lazy" decoding="async" class="av" src="${esc(photoOf(p))}" alt=""${pf(p)}><input type="file" accept="image/*" data-photo="${p.id}"></label></td><td><b>${esc(p.name)}</b></td><td>${contacts[p.id] ? `<a href="tel:${esc(contacts[p.id].replace(/[^0-9+]/g, ''))}" style="color:inherit;white-space:nowrap">${esc(contacts[p.id])}</a>` : '—'}</td>
       <td><select class="select" data-lv="${p.id}" style="padding:6px 8px">${Object.entries(LEVEL).map(([k, v]) => `<option value="${k}" ${p.level === k ? 'selected' : ''}>${v.label}</option>`).join('')}</select></td>
       <td><span class="chip ${p.status}">${STATUS_LABEL[p.status]}</span></td><td>${p.teamId ? esc(T.get(p.teamId)?.name || '') : '—'}</td><td>${p.price != null ? inr(p.price) : '—'}</td>
       <td><div class="acts"><button class="btn ghost sm" data-assign="${p.id}">${p.teamId ? 'Move' : 'Assign'}</button>${p.teamId ? `<button class="btn ghost sm" data-un="${p.id}">Release</button>` : ''}<button class="btn ghost sm" data-edit="${p.id}">${icon('edit')}</button><button class="btn red sm" data-del="${p.id}">${icon('trash')}</button></div></td></tr>`).join('');
@@ -217,7 +217,7 @@ export function adminTeamsView() {
     return `<select class="select" data-retone="${t.id}"><option value="">— none —</option>${avail.map((p) => `<option value="${p.id}" ${mine && mine.id === p.id ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select>`;
   };
   const card = (s, t) => `<div class="te glass" data-t="${t.id}" style="border-top:4px solid ${t.color}">
-    <div class="hd"><label class="up-btn" title="Upload logo"><img src="${esc(logoOf(t))}" alt=""><input type="file" accept="image/*" data-logo="${t.id}"></label><b>${esc(t.name)}</b><span style="flex:1"></span><button class="btn red sm" data-delt="${t.id}">${icon('trash')}</button></div>
+    <div class="hd"><label class="up-btn" title="Upload logo"><img loading="lazy" decoding="async" src="${esc(logoOf(t))}" alt=""><input type="file" accept="image/*" data-logo="${t.id}"></label><b>${esc(t.name)}</b><span style="flex:1"></span><button class="btn red sm" data-delt="${t.id}">${icon('trash')}</button></div>
     <div class="form-grid" style="grid-template-columns:1fr 1fr">
       <div class="field"><label>Team name</label><input class="input" data-f="name" value="${esc(t.name)}"></div><div class="field"><label>Short code</label><input class="input" data-f="short" maxlength="4" value="${esc(t.short || '')}"></div>
       <div class="field"><label>Owner</label><input class="input" data-f="owner" value="${esc(t.owner || '')}"></div>

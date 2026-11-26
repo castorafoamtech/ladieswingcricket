@@ -530,6 +530,8 @@ function reseedCaptains() {
   applyCaptains();
 }
 if (state.players.length) {
+  // players on the waiting list (seed/import.json "exclude") are kept out of the auction
+  if (state.auction.phase === 'idle') { const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); const ex = new Set((IMPORT_CFG.exclude || []).map(nm)); state.players = state.players.filter((p) => p.status !== 'pending' || !ex.has(nm(p.name))); }
   applyLevelFixes();
   if (state.auction.phase === 'idle') {
     if ((state.meta.captainSeed || 0) < (EV.version || 1)) { reseedCaptains(); state.meta.captainSeed = EV.version || 1; }

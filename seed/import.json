@@ -1,12 +1,16 @@
 {
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1cpGZd41yZMuH5DI9GvTrtEJc6ArQP4yxH2FvesRnfM8/edit?usp=sharing",
   "owners": {},
-  "exclude": [],
+  "exclude": [
+    "Toral Ishan Shah",
+    "Shilpa Roy"
+  ],
   "photoFocus": {},
   "retained": {},
   "rename": {},
   "pins": [],
   "levels": {
     "Purvi Mahabal Shah": "sometimes"
-  }
+  },
+  "waitlistNote": "Waiting list: last two to register (excluded from auction)"
 }

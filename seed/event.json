@@ -107,7 +107,7 @@
     "purse": 5000000,
     "basePrice": 100000,
     "retainedPrice": 500000,
-    "squadSize": 9,
+    "squadSize": 8,
     "slabs": [
       {
         "upTo": 500000,
@@ -121,5 +121,5 @@
     "eventName": "Queens Premier League",
     "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 9
+  "version": 10
 }

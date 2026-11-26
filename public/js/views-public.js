@@ -197,7 +197,7 @@ export function teamView(id) {
         <div class="owner-line">${t.ownerPhoto ? `<img loading="lazy" decoding="async" src="${esc(t.ownerPhoto)}" alt="">` : ''}<div><small>Team owner</small><b>${esc(t.owner || '—')}</b></div></div></div></div>
       <div class="team-stats"><div><small>Squad</small><b>${st.filled}/${st.squadSize}</b></div><div><small>Total spent</small><b>${inr(st.spent)}</b></div><div><small>Top buy</small><b>${inr(st.top)}</b></div><div><small>Purse</small><b>${inr(st.spent + st.purseLeft)}</b></div></div>
       ${s.auction.phase === 'done' ? `<div class="jer-big">${jerseySVG(t)}</div>` : ''}</div>
-    ${ret.length ? `<div class="sec-title"><h2>Retained <em>player</em></h2><div class="bar"></div></div><div class="pairs">${ret.map((p) => `<div class="pair">${cell(p, 'Owner · Retained')}</div>`).join('')}</div>` : ''}
+    ${ret.length ? `<div class="sec-title"><h2>Captain <em>(retained)</em></h2><div class="bar"></div></div><div class="pairs">${ret.map((p) => `<div class="pair">${cell(p, 'Captain · Retained')}</div>`).join('')}</div>` : ''}
     <div class="sec-title"><h2>The <em>squad</em></h2><div class="bar"></div></div>
     <div class="pgrid">${bought.map((p, i) => `<div class="pcard sold" data-pid="${p.id}" style="animation-delay:${i * 40}ms"><div class="ph"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" alt=""${pf(p)}></div><div class="lv" style="--c:${(LEVEL[p.level] || LEVEL.no).color}"></div><div class="meta"><b>${esc(p.name)}</b><small>${esc((LEVEL[p.level] || LEVEL.no).long)}<span class="pr">${inr(p.price)}</span></small></div></div>`).join('')}${empties}</div>`;
   };

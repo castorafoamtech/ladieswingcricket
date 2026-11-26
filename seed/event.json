@@ -27,7 +27,10 @@
         "secondary": "#F5C33B",
         "pattern": "solid"
       },
-      "captain": "Dipa Bhavin Doshi"
+      "captain": "Dipa Bhavin Doshi",
+      "aliases": [
+        "Deepa Doshi"
+      ]
     },
     {
       "name": "Kanadia Fire Queens",
@@ -40,7 +43,7 @@
         "secondary": "#E8461E",
         "pattern": "solid"
       },
-      "captain": "Monika Rajen Shah"
+      "captain": "Pooja Shah"
     },
     {
       "name": "Krivam Fighters",
@@ -118,5 +121,5 @@
     "eventName": "Queens Premier League",
     "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 8
+  "version": 9
 }

@@ -511,14 +511,31 @@ function applyCaptains() {
     const t = state.teams.find((y) => nm(y.name) === nm(x.name));
     if (!t || state.players.some((p) => p.teamId === t.id && p.status === 'retained')) continue;
     let p = state.players.find((q) => nm(q.name) === nm(x.captain) && q.status === 'pending');
-    if (!p) { p = newPlayer({ name: x.captain, photo: '', level: 'yes', extra: { Role: 'Captain' } }); state.players.push(p); }
+    if (!p) { p = newPlayer({ name: x.captain, photo: '', level: 'yes', extra: { Role: 'Captain' } }); p.addedCaptain = true; state.players.push(p); }
     else p.extra = { ...(p.extra || {}), Role: 'Captain' };
     E.setRetained(state, t.id, [{ playerId: p.id, price: state.settings.retainedPrice || 0 }]);
     t.owner = x.owner || x.captain; n++;
   }
   return n;
 }
-if (state.players.length) { applyLevelFixes(); if (state.auction.phase === 'idle') applyCaptains(); }
+// When the captain list changes (new event.json version) and the auction hasn't started: undo the old captains and apply the new ones
+function reseedCaptains() {
+  const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  for (const t of state.teams) E.setRetained(state, t.id, []);
+  // drop captain cards the app created for captains who hadn't registered
+  state.players = state.players.filter((p) => !(p.addedCaptain || (!p.priv && !p.photo && p.extra && p.extra.Role === 'Captain')));
+  for (const p of state.players) if (p.extra && p.extra.Role === 'Captain' && p.priv) { const r = Object.entries(p.priv).find(([h]) => /role/i.test(h)); if (r) p.extra.Role = r[1]; }
+  // captains registered under another name get their full name
+  for (const x of EV.teams || []) for (const a of x.aliases || []) { const p = state.players.find((q) => nm(q.name) === nm(a)); if (p) p.name = x.captain; }
+  applyCaptains();
+}
+if (state.players.length) {
+  applyLevelFixes();
+  if (state.auction.phase === 'idle') {
+    if ((state.meta.captainSeed || 0) < (EV.version || 1)) { reseedCaptains(); state.meta.captainSeed = EV.version || 1; }
+    else applyCaptains();
+  }
+}
 
 async function bootImport(attempt = 1) {
   if (!IMPORT_CFG.sheetUrl || state.players.length || state.auction.phase !== 'idle') return;

@@ -45,7 +45,7 @@ export function stageHTML(state) {
 
 function statsHTML(state) {
   const c = counts(state);
-  const items = [['Total players', c.total, '#6cb6ff', 'in the pool'], ['Sold', c.sold + c.retained, '#2fe38a', c.retained ? `${c.retained} retained` : 'to teams'], ['Pending', c.pending + c.onBlock, '#ffc53d', 'yet to come'], ['Unsold', c.unsold, '#ff4d5e', 'second round']];
+  const items = [['Total players', c.total, '#7c3aed', 'incl. captains'], ['Sold', c.sold, '#12a35a', c.retained ? `+ ${c.retained} captains retained` : 'to teams'], ['Pending', c.pending + c.onBlock, '#f5a524', 'yet to come'], ['Unsold', c.unsold, '#e6247b', 'second round']];
   return items.map(([l, v, col, sub], i) => `<div class="stat glass" style="--c:${col}"><small>${l}</small><b class="mono" data-count="${v}" data-money="${i === 4 ? 1 : 0}">0</b><div class="sub">${sub}</div></div>`).join('');
 }
 const MEDAL = ['#ffc53d', '#cfd8e3', '#d98a4e'];
@@ -191,7 +191,7 @@ export function teamView(id) {
     const ret = mine.filter((p) => p.status === 'retained');
     const bought = mine.filter((p) => p.status === 'sold').sort((a, b) => (b.price || 0) - (a.price || 0));
     const cell = (p, role) => p ? `<div class="pl" data-pid="${p.id}" style="cursor:pointer"><img loading="lazy" decoding="async" src="${esc(photoOf(p))}" alt=""${pf(p)}><div><small>${role}</small><b>${esc(p.name)}</b></div></div>` : `<div class="pl"><div><small>${role}</small><b style="color:var(--muted)">To be picked</b></div></div>`;
-    const empties = Array.from({ length: st.left }, (_, i) => `<div class="pcard" style="opacity:.55;cursor:default;animation:none"><div class="ph" style="display:grid;place-items:center"><span style="font-family:var(--head);font-size:70px;color:rgba(255,255,255,.25)">?</span></div><div class="meta"><b style="color:var(--muted)">Open slot</b></div></div>`).join('');
+    const empties = Array.from({ length: st.left }, (_, i) => `<div class="pcard empty" style="cursor:default;animation:none"><div class="ph" style="display:grid;place-items:center"><span style="font-family:var(--head);font-size:70px;color:rgba(124,58,237,.3)">?</span></div><div class="meta"><b style="color:var(--muted)">Open slot</b></div></div>`).join('');
     return `<div class="team-hero" style="--tc:${t.color}"><div class="row"><img loading="lazy" decoding="async" class="logo" src="${esc(logoOf(t))}" alt="">
       <div><div class="chip" style="margin-bottom:10px"><a href="#/teams">${icon('back')} Teams</a></div><h1>${esc(t.name)}</h1>
         <div class="owner-line">${t.ownerPhoto ? `<img loading="lazy" decoding="async" src="${esc(t.ownerPhoto)}" alt="">` : ''}<div><small>Team owner</small><b>${esc(t.owner || '—')}</b></div></div></div></div>

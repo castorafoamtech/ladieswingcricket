@@ -102,6 +102,11 @@
         "role": "Supported By",
         "name": "Priti Marine Pvt Ltd & Grace Dance Studio by Parita Prakash Doshi",
         "logo": "/assets/sponsors/priti-grace.jpg"
+      },
+      {
+        "role": "Gift Sponsor",
+        "name": "Prijushi Creations by Reena Kala",
+        "logo": "/assets/sponsors/prijushi.jpg"
       }
     ],
     "purse": 5000000,
@@ -121,5 +126,5 @@
     "eventName": "Queens Premier League",
     "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 10
+  "version": 11
 }

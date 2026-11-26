@@ -762,3 +762,4 @@ nav.main a{padding:10px 12px;letter-spacing:.1em}
 .pcard.empty,.slot{background:linear-gradient(160deg,#f3e8ff,#fde4f1)!important;border:1px dashed rgba(124,58,237,.3)!important}
 .pcard.empty .ph::after{display:none}.pcard.empty .meta b{color:#7c3aed!important}
 .pcard.empty .ph{background:transparent!important}
+.spon img[src*="prijushi"]{height:84px}

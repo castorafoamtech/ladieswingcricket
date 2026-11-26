@@ -252,7 +252,7 @@ export function playersView(openPlayer) {
   };
   return {
     static: true,
-    onState(s) { if (box && box.isConnected) { const q = $('#fq', box); const keep = q && document.activeElement === q; box.querySelectorAll('.toolbar [data-st] b').forEach(() => 0); const c = counts(s); $$('[data-st]', box).forEach((b) => { const k = b.dataset.st; b.querySelector('b').textContent = k === 'all' ? c.total : k === 'sold' ? c.sold + c.retained : c[k]; }); paint(s); } },
+    onState(s) { if (box && box.isConnected) { const q = $('#fq', box); const keep = q && document.activeElement === q; box.querySelectorAll('.toolbar [data-st] b').forEach(() => 0); const c = counts(s); $$('[data-st]', box).forEach((b) => { const k = b.dataset.st; b.querySelector('b').textContent = k === 'all' ? c.total : c[k]; }); paint(s); } },
     mount(b, s) {
       box = b; b.innerHTML = shell(s); paint(s);
       b.onclick = (e) => {

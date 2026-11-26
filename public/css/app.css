@@ -761,3 +761,4 @@ nav.main a{padding:10px 12px;letter-spacing:.1em}
 .team-hero{background:linear-gradient(135deg,color-mix(in srgb,var(--tc) 70%,#3b0a6b) 0%,#3b0a6b 60%,#6a1b9a 100%)!important}
 .pcard.empty,.slot{background:linear-gradient(160deg,#f3e8ff,#fde4f1)!important;border:1px dashed rgba(124,58,237,.3)!important}
 .pcard.empty .ph::after{display:none}.pcard.empty .meta b{color:#7c3aed!important}
+.pcard.empty .ph{background:transparent!important}

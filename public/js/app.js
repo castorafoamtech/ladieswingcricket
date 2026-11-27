@@ -206,7 +206,7 @@ export function openPlayer(id, list) {
     const p = P.get(list[i]); if (!p) return;
     const t = p.teamId ? T.get(p.teamId) : null; const lv = LEVEL[p.level] || LEVEL.no;
     const ex = Object.entries(p.extra || {});
-    back.innerHTML = `<div class="modal glass" role="dialog" aria-label="${esc(p.name)}"><button class="icon-btn x" data-x>${icon('x')}</button>
+    back.innerHTML = `<div class="modal glass" role="dialog" aria-label="${esc(p.name)}"><button class="pm-close" data-x aria-label="Close">${icon('back')} <span>Back</span></button>
       <div class="pm"><div class="p-photo"><div class="frame"><img src="${esc(photoOf(p))}" alt=""${pf(p)}><div class="shine"></div></div></div>
       <div><div class="row" style="display:flex;gap:8px;margin-bottom:10px"><span class="chip ${p.status}">${STATUS_LABEL[p.status]}</span><span class="chip">${i + 1} / ${list.length}</span></div>
         <div class="nm">${esc(p.name)}</div>
@@ -216,10 +216,14 @@ export function openPlayer(id, list) {
           ${t ? `<dt>Team</dt><dd style="display:flex;align-items:center;gap:10px"><img src="${esc(logoOf(t))}" style="width:34px;height:34px;border-radius:10px;background:#fff;object-fit:contain" alt=""> ${esc(t.name)}</dd><dt>${p.status === 'retained' ? 'Retained' : 'Sold for'}</dt><dd style="font-family:var(--head);font-size:30px;color:var(--yellow);font-weight:400">${p.status === 'retained' && !p.price ? (p.retainRole === 'partner' ? 'Partner' : 'Captain') : inr(p.price)}</dd>` : ''}
           ${ex.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}
         </dl>
-        <div class="pm-nav"><button class="btn ghost" data-prev>${icon('back')} Back</button><button class="btn" data-next>Next ${icon('next')}</button></div>
+        <div class="pm-nav"><button class="btn ghost" data-prev>${icon('back')} Previous</button><button class="btn ghost" data-x>${icon('x')} Close</button><button class="btn" data-next>Next ${icon('next')}</button></div>
       </div></div></div>`;
   };
-  const close = () => { back.remove(); document.removeEventListener('keydown', modalKey); modalKey = null; };
+  let closed = false;
+  const close = (fromPop) => { if (closed) return; closed = true; back.remove(); document.removeEventListener('keydown', modalKey); modalKey = null; window.removeEventListener('popstate', onPop); if (fromPop !== true && history.state && history.state.pm) history.back(); };
+  // the phone's back button / gesture closes the player card instead of leaving the page
+  const onPop = () => close(true);
+  history.pushState({ pm: 1 }, '', location.href); window.addEventListener('popstate', onPop);
   modalKey = (e) => { if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') { i = (i + 1) % list.length; draw(); } if (e.key === 'ArrowLeft') { i = (i - 1 + list.length) % list.length; draw(); } };
   back.onclick = (e) => {
     if (e.target === back || e.target.closest('[data-x]')) return close();

@@ -195,7 +195,7 @@ export function teamView(id) {
     return `<div class="team-hero" style="--tc:${t.color}"><div class="row"><img loading="lazy" decoding="async" class="logo" src="${esc(logoOf(t))}" alt="">
       <div><div class="chip" style="margin-bottom:10px"><a href="#/teams">${icon('back')} Teams</a></div><h1>${esc(t.name)}</h1>
         <div class="owner-line">${t.ownerPhoto ? `<img loading="lazy" decoding="async" src="${esc(t.ownerPhoto)}" alt="">` : ''}<div><small>Team owner</small><b>${esc(t.owner || '—')}</b></div></div></div></div>
-      <div class="team-stats"><div><small>Squad</small><b>${st.filled}/${st.squadSize}</b></div><div><small>Total spent</small><b>${inr(st.spent)}</b></div><div><small>Top buy</small><b>${inr(st.top)}</b></div><div><small>Purse</small><b>${inr(st.spent + st.purseLeft)}</b></div></div>
+      <div class="team-stats"><div><small>Squad</small><b>${st.filled}/${st.squadSize}</b></div><div><small>Total spent</small><b>${inr(st.spent)}</b></div><div><small>Top buy</small><b>${(() => { const tb = s.players.filter((p) => p.teamId === t.id && p.status === 'sold').reduce((a, p) => Math.max(a, Number(p.price) || 0), 0); return tb ? inr(tb) : '—'; })()}</b></div><div><small>Purse left</small><b>${inr(st.purseLeft)}</b></div></div>
       ${s.auction.phase === 'done' ? `<div class="jer-big">${jerseySVG(t)}</div>` : ''}</div>
     ${ret.length ? `<div class="sec-title"><h2>Captain <em>(retained)</em></h2><div class="bar"></div></div><div class="pairs">${ret.map((p) => `<div class="pair">${cell(p, 'Captain · Retained')}</div>`).join('')}</div>` : ''}
     <div class="sec-title"><h2>The <em>squad</em></h2><div class="bar"></div></div>

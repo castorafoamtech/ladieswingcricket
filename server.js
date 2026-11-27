@@ -533,6 +533,37 @@ function reseedCaptains() {
   for (const x of EV.teams || []) for (const a of x.aliases || []) { const p = state.players.find((q) => nm(q.name) === nm(a)); if (p) p.name = x.captain; }
   applyCaptains();
 }
+// One-time roster swaps that are safe mid-auction (seed/event.json "liveEdits", each applied once, tracked in state.meta).
+// Only touches players who are still waiting to be auctioned; sold, retained and on-the-block players are never changed.
+function applyLiveEdits() {
+  const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  state.meta.liveEdits = state.meta.liveEdits || [];
+  let changed = false;
+  for (const ed of EV.liveEdits || []) {
+    if (state.meta.liveEdits.includes(ed.id)) continue;
+    const onBlock = state.auction.current && state.auction.current.playerId;
+    for (const n of ed.remove || []) {
+      const p = state.players.find((q) => nm(q.name) === nm(n));
+      if (!p) continue;
+      if (p.status !== 'pending' && p.status !== 'unsold') { console.log('liveEdits: kept', p.name, '(already', p.status + ')'); continue; }
+      if (p.id === onBlock) { console.log('liveEdits: kept', p.name, '(on the block)'); continue; }
+      state.players = state.players.filter((q) => q.id !== p.id);
+      state.auction.queue = (state.auction.queue || []).filter((id) => id !== p.id);
+      console.log('liveEdits: removed', p.name); changed = true;
+    }
+    for (const a of ed.add || []) {
+      if (state.players.some((q) => nm(q.name) === nm(a.name))) continue;
+      const p = newPlayer({ name: a.name, level: a.level, extra: a.extra, photo: '' });
+      state.players.push(p);
+      if (state.auction.phase !== 'idle' && state.auction.phase !== 'done') state.auction.queue = (state.auction.queue || []).concat(p.id);
+      console.log('liveEdits: added', p.name); changed = true;
+    }
+    state.meta.liveEdits.push(ed.id);
+  }
+  return changed;
+}
+if (applyLiveEdits()) save();
+
 if (state.players.length) {
   // players on the waiting list (seed/import.json "exclude") are kept out of the auction
   if (state.auction.phase === 'idle') { const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); const ex = new Set((IMPORT_CFG.exclude || []).map(nm)); state.players = state.players.filter((p) => { if (p.status !== 'pending') return true; if (ex.has(nm(p.name))) return false; const ts = p.priv && Object.entries(p.priv).find(([h]) => /timestamp/i.test(h)); return !(ts && IMPORT_CFG.closedAfter && tsVal(ts[1]) > tsVal(IMPORT_CFG.closedAfter)); }); }

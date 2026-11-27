@@ -131,5 +131,34 @@
     "eventName": "Queens Premier League",
     "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 12
+  "version": 12,
+  "liveEdits": [
+    {
+      "id": "swap-2026-11-27",
+      "remove": [
+        "Charmi Keval Parekh",
+        "Nidhi Siddharth Doshi"
+      ],
+      "add": [
+        {
+          "name": "Nikita Chintan Shah",
+          "level": "yes",
+          "extra": {
+            "Role": "All-rounder",
+            "Batting": "Right Hand Batsman",
+            "Player type": "Regular Player"
+          }
+        },
+        {
+          "name": "Toral Ishan Shah",
+          "level": "yes",
+          "extra": {
+            "Role": "All-rounder",
+            "Batting": "Right Hand Batsman",
+            "Player type": "Regular Player"
+          }
+        }
+      ]
+    }
+  ]
 }

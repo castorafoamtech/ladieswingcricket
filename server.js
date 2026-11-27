@@ -395,6 +395,8 @@ function colLabel(h) {
   if (/player type|type/i.test(t)) return 'Player type';
   return titleCase(t);
 }
+// "26/11/2026 11:14:08" -> sortable number
+function tsVal(v) { const m = String(v || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/); return m ? Date.UTC(+m[3], +m[2] - 1, +m[1], +m[4], +m[5], +(m[6] || 0)) : 0; }
 function importRows(headers, rows, mapping, mode) {
   if (!(mapping.name >= 0)) throw Object.assign(new Error('Pick the Name column'), { status: 400 });
   if (mode === 'replace') {
@@ -419,6 +421,8 @@ function importRows(headers, rows, mapping, mode) {
     // a captain who registered under a shorter name (seed/event.json "aliases") is imported under her full name
     for (const x of EV.teams || []) if (x.captain && (x.aliases || []).some((a) => norm(a) === norm(name))) name = x.captain;
     if (excluded.has(norm(name))) { skipped++; continue; }
+    // registrations after the cut-off (seed/import.json "closedAfter") go to the waiting list, not the auction
+    { const ti = headers.findIndex((h) => /timestamp/i.test(h)); if (ti >= 0 && IMPORT_CFG.closedAfter && tsVal(r[ti]) > tsVal(IMPORT_CFG.closedAfter)) { skipped++; continue; } }
     const extra = {}; const priv = {};
     headers.forEach((h, i) => {
       if (mapped.has(i) || !h || !clean(r[i])) return;
@@ -531,7 +535,7 @@ function reseedCaptains() {
 }
 if (state.players.length) {
   // players on the waiting list (seed/import.json "exclude") are kept out of the auction
-  if (state.auction.phase === 'idle') { const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); const ex = new Set((IMPORT_CFG.exclude || []).map(nm)); state.players = state.players.filter((p) => p.status !== 'pending' || !ex.has(nm(p.name))); }
+  if (state.auction.phase === 'idle') { const nm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); const ex = new Set((IMPORT_CFG.exclude || []).map(nm)); state.players = state.players.filter((p) => { if (p.status !== 'pending') return true; if (ex.has(nm(p.name))) return false; const ts = p.priv && Object.entries(p.priv).find(([h]) => /timestamp/i.test(h)); return !(ts && IMPORT_CFG.closedAfter && tsVal(ts[1]) > tsVal(IMPORT_CFG.closedAfter)); }); }
   applyLevelFixes();
   if (state.auction.phase === 'idle') {
     if ((state.meta.captainSeed || 0) < (EV.version || 1)) { reseedCaptains(); state.meta.captainSeed = EV.version || 1; }

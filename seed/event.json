@@ -99,6 +99,11 @@
         "logo": "/assets/sponsors/orchid-bambaiwala.webp"
       },
       {
+        "role": "Powered By",
+        "name": "Shivanjali Wellness",
+        "logo": "/assets/sponsors/shivanjali.webp"
+      },
+      {
         "role": "Supported By",
         "name": "Priti Marine Pvt Ltd & Grace Dance Studio by Parita Prakash Doshi",
         "logo": "/assets/sponsors/priti-grace.jpg"
@@ -126,5 +131,5 @@
     "eventName": "Queens Premier League",
     "organiser": "JITO Bhavnagar Ladies Wing"
   },
-  "version": 11
+  "version": 12
 }
